@@ -16,7 +16,7 @@ public class ColorSensorTest extends LinearOpMode {
 
             if (colorSensor.blue()<100 && colorSensor.red()<100 && colorSensor.green()<100){
                 telemetry.addData("Color", "none");
-                light.setPosition(0.2875);
+                light.setPosition(0.28);
             }
             else if(colorSensor.green() > colorSensor.blue() && colorSensor.green() > colorSensor.red()){
                 telemetry.addData("Color", "Green");
