@@ -1,0 +1,46 @@
+package org.firstinspires.ftc.teamcode.common.controller;
+
+/**
+ * Represents all the "Buttons" kind of misleading as it includes button down and button up events
+ */
+public enum Button {
+    A_UP,
+    B_UP,
+    X_UP,
+    Y_UP,
+    TRIANGLE_UP,
+    CIRCLE_UP,
+    CROSS_UP,
+    SQUARE_UP,
+    D_UP_UP,
+    D_RIGHT_UP,
+    D_DOWN_UP,
+    D_LEFT_UP,
+    R_BUMPER_UP,
+    L_BUMPER_UP,
+    R_TRIGGER_UP,
+    L_TRIGGER_UP,
+    TOUCHPAD_UP,
+    L_STICK_UP,
+    R_STICK_UP,
+
+    A_DOWN,
+    B_DOWN,
+    X_DOWN,
+    Y_DOWN,
+    TRIANGLE_DOWN,
+    CIRCLE_DOWN,
+    CROSS_DOWN,
+    SQUARE_DOWN,
+    D_UP_DOWN,
+    D_RIGHT_DOWN,
+    D_DOWN_DOWN,
+    D_LEFT_DOWN,
+    R_BUMPER_DOWN,
+    L_BUMPER_DOWN,
+    R_TRIGGER_DOWN,
+    L_TRIGGER_DOWN,
+    TOUCHPAD_DOWN,
+    L_STICK_DOWN,
+    R_STICK_DOWN,
+}
