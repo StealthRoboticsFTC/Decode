@@ -10,12 +10,16 @@ import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(5);
+            .mass(15.422);
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
+            .maxPower(1)
             .leftFrontMotorName("motor_lf")
             .leftRearMotorName("motor_lb")
             .rightFrontMotorName("motor_rf")
@@ -26,10 +30,12 @@ public class Constants {
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             ;
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(0.75)
-            .strafePodX(-6.6)
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .forwardPodY(-4.75)
+            .strafePodX(1.5)
+            .distanceUnit(DistanceUnit.INCH)
+            .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
     /**
      These are the PathConstraints in order:
      tValueConstraint, velocityConstraint, translationalConstraint, headingConstraint, timeoutConstraint,

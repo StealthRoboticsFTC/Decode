@@ -79,7 +79,7 @@ public class SystemTest extends LinearOpMode {
 
         intakeMotor = hardwareMap.get(DcMotor.class, "motor_im");
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         transferLeft = hardwareMap.get(CRServo.class, "servo_tl");
         transferLeft.setDirection(DcMotorSimple.Direction.REVERSE);

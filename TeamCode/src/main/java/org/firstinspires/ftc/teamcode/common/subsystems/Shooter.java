@@ -15,16 +15,20 @@ public class Shooter {
     private final DcMotorEx shooterRight;
     private final Servo flap;
 
-    private final static int closeVelocity = 1200;
+    private final static int closeVelocity = 1075;
     private final static int farVelocity = 1440;
+    private final static int offVelocity = 0;
 
-    private final static double flapPositionClose= 0.5;
-    private final static double flapPositionFar= 0.75;
+    private int targetVelocity  = 0;
 
-    private final static double kp = 0;
+    private final static double flapPositionClose= 0.9;
+    private final static double flapPositionFar= 0.0;
+
+    private final static double kp = 0.005;
     private final static double ki = 0;
     private final static double kd = 0;
-    private final static double kf = 0;
+    private final static double kf = 0.0006675;
+            ;
 
     private final PIDFController controller;
 
@@ -44,16 +48,33 @@ public class Shooter {
     }
 
     public void shootFar(){
+        targetVelocity = farVelocity;
         controller.setTargetPosition(farVelocity);
         flap.setPosition(flapPositionFar);
     }
     public void shootClose(){
-
+        targetVelocity = closeVelocity;
         controller.setTargetPosition(closeVelocity);
         flap.setPosition(flapPositionClose);
     }
 
+    public void shooterOff(){
+        targetVelocity = offVelocity;
+        controller.setTargetPosition(offVelocity);
+    }
+
+    public boolean atTargetVelocity(){
+        return shooterLeft.getVelocity() > targetVelocity - 50 && shooterLeft.getVelocity() < targetVelocity + 50;
+    }
+    public double getVelocity(){
+        return shooterLeft.getVelocity();
+    }
+    public double getTargetVelocity(){
+        return targetVelocity;
+    }
+
     public void update(){
+        controller.updateFeedForwardInput(targetVelocity);
         controller.updatePosition(shooterLeft.getVelocity());
         shooterRight.setPower(controller.run());
         shooterLeft.setPower(controller.run());

@@ -24,7 +24,7 @@ public class Transfer {
         transferRight.setPower(transferOn);
     }
 
-    public void turnOffIntake(){
+    public void turnOffTransfer(){
         transferLeft.setPower(transferOff);
         transferRight.setPower(transferOff);
     }

@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.common.command;
 
 import org.firstinspires.ftc.teamcode.common.Robot;
 
-public class ShootClose implements Command{
+public class ShootFar implements Command{
     private int stage = 0;
     @Override
     public void update(Robot robot) {
         if (stage == 0){
-            robot.intake.turnOffIntake();
 
-            robot.shooter.shootClose();
+            robot.shooter.shootFar();
             stage++;
         } else if (stage == 1 && robot.shooter.atTargetVelocity()) {
             robot.intake.turnOnIntake();
@@ -24,3 +23,4 @@ public class ShootClose implements Command{
         return stage==2;
     }
 }
+

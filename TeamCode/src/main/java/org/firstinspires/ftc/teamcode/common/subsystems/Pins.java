@@ -8,13 +8,13 @@ public class Pins {
     private final Servo centerPin;
     private final Servo rightPin;
 
-    private final static double leftPinClose = 0.25;
-    private final static double centerPinClose = 0.5;
-    private final static double rightPinClose = 0.75;
+    private final static double leftPinClose = 0.3325;
+    private final static double centerPinClose = 0.475;
+    private final static double rightPinClose = 0.8;
 
-    private final static double leftPinOpen= 0.75;
-    private final static double centerPinOpen = 0.5;
-    private final static double rightPinOpen = 0.25;
+    private final static double leftPinOpen= 0.375;
+    private final static double centerPinOpen = 0.65;
+    private final static double rightPinOpen = 0.725;
 
     public Pins(HardwareMap hardwareMap){
         leftPin = hardwareMap.get(Servo.class,"servo_lp");
