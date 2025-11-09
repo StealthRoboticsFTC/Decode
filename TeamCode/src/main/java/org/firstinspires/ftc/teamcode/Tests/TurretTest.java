@@ -26,6 +26,11 @@ public class TurretTest extends LinearOpMode {
             turretMotor.setTargetPosition(turretPosition);
             turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turretMotor.setPower(turretPower);
+            while (turretMotor.isBusy()){
+                telemetry.addData("power", turretPower);
+                telemetry.addData("position", turretMotor.getCurrentPosition());
+                telemetry.update();
+            }
             telemetry.addData("TurretPosition", turretMotor.getCurrentPosition());
             telemetry.update();
 
