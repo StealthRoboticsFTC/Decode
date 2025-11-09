@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
 import org.firstinspires.ftc.teamcode.common.command.ShootFar;
+import org.firstinspires.ftc.teamcode.common.command.ShootMedium;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
 @TeleOp
@@ -30,6 +31,9 @@ public class DriverControl extends LinearOpMode {
         processor = new Processor();
 
         listener.addListener(Button.R_TRIGGER_DOWN, ()->{
+            processor.override(new ShootMedium());
+        });
+        listener.addListener(Button.R_BUMPER_DOWN, ()->{
             processor.override(new ShootClose());
         });
         listener.addListener(Button.L_TRIGGER_DOWN, ()->{
