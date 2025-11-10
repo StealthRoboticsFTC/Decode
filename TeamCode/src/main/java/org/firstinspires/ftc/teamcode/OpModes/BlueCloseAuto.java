@@ -13,18 +13,18 @@ import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
 
 @Autonomous
-public class RedCloseAuto extends LinearOpMode {
+public class BlueCloseAuto extends LinearOpMode {
     Robot robot;
     Processor processor;
     ElapsedTime elapsedTime;
     private static int stage;
     private final double heading = Math.toRadians(262.5);
 
-    private final Pose startPose = new Pose(124,123,Math.toRadians(215));
-    private final Pose scorePose = new Pose(118,110, heading);
-    private final Pose pickup1Pose = new Pose(118,80, heading);
-    private final Pose pickup2Pose = new Pose(115.25,60, heading);
-    private final Pose parkPose = new Pose(118,90, heading);
+    private final Pose startPose = new Pose(124,123,Math.toRadians(215)).mirror();
+    private final Pose scorePose = new Pose(120,110, heading).mirror();
+    private final Pose pickup1Pose = new Pose(120,80, heading).mirror();
+    private final Pose pickup2Pose = new Pose(120,60, heading).mirror();
+    private final Pose parkPose = new Pose(120,90, heading).mirror();
 
 
 
@@ -46,23 +46,23 @@ public class RedCloseAuto extends LinearOpMode {
 
         grabPickup1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(scorePose,pickup1Pose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading())
                 .build();
         scorePickup1= robot.follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, scorePose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
                 .build();
         grabPickup2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(scorePose,pickup2Pose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup2Pose.getHeading())
                 .build();
         scorePickup2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, scorePose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading())
                 .build();
         park = robot.follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, parkPose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading())
                 .build();
 
         waitForStart();
