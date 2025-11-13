@@ -25,7 +25,7 @@ public class RedCloseAuto extends LinearOpMode {
     private final Pose startPose = new Pose(124,123,Math.toRadians(215));
     private final Pose scorePose = new Pose(118,110, heading);
     private final Pose pickup1Pose = new Pose(118,80, heading);
-    private final Pose pickup2Pose = new Pose(115.25,60, heading);
+    private final Pose pickup2Pose = new Pose(114.5,60, heading);
     private final Pose parkPose = new Pose(118,90, heading);
 
 

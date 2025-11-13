@@ -11,7 +11,7 @@ public class Turret {
     private DcMotorEx turret;
 
     private final static int redClose = 2000;
-    private final static int redFar = 1000;
+    private final static int redFar = 1500;
     private final static int blueClose = -2000;
     private final static int blueFar = -1000;
 

@@ -53,6 +53,7 @@ public class DriverControl extends LinearOpMode {
         robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         robot.follower.update();
         waitForStart();
+        robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(true);
 
         while (!isStopRequested()){

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.ShootFar;
+@Autonomous
 
 public class RedFarAuto extends LinearOpMode {
     Robot robot;
@@ -42,7 +44,7 @@ public class RedFarAuto extends LinearOpMode {
        waitForStart();
        while (!isStopRequested()){
            if (stage == 0){
-               robot.follower.setMaxPower(0.75);
+               robot.follower.setMaxPower(0.25);
                processor.override(new ShootFar());
                robot.follower.followPath(score);
                elapsedTime.reset();
@@ -52,6 +54,8 @@ public class RedFarAuto extends LinearOpMode {
                processor.override(new Reset());
                stage++;
            }
+           telemetry.addData("stage", stage);
+           telemetry.update();
            robot.update();
            processor.update(robot);
 
