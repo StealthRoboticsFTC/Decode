@@ -7,6 +7,7 @@ public class IntakeBall implements Command{
     @Override
     public void update(Robot robot) {
         if (stage == 0){
+
             robot.transfer.turnOffTransfer();
             robot.shooter.shooterOff();
             robot.intake.turnOnIntake();

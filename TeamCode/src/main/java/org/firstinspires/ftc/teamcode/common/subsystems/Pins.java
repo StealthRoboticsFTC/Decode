@@ -8,8 +8,8 @@ public class Pins {
     private final Servo centerPin;
     private final Servo rightPin;
 
-    private final static double leftPinClose = 0.3325;
-    private final static double centerPinClose = 0.475;
+    private final static double leftPinClose = 0.325;
+    private final static double centerPinClose = 0.435;
     private final static double rightPinClose = 0.8;
 
     private final static double leftPinOpen= 0.375;

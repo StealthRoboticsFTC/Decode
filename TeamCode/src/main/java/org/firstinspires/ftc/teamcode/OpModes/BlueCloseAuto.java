@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
+import org.firstinspires.ftc.teamcode.common.command.Reset;
+import org.firstinspires.ftc.teamcode.common.command.ShootBlueAuto;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
 
 @Autonomous
@@ -18,12 +20,12 @@ public class BlueCloseAuto extends LinearOpMode {
     Processor processor;
     ElapsedTime elapsedTime;
     private static int stage;
-    private final double heading = Math.toRadians(262.5);
+    private final double heading = Math.toRadians(265);
 
     private final Pose startPose = new Pose(124,123,Math.toRadians(215)).mirror();
     private final Pose scorePose = new Pose(120,110, heading).mirror();
-    private final Pose pickup1Pose = new Pose(120,80, heading).mirror();
-    private final Pose pickup2Pose = new Pose(120,60, heading).mirror();
+    private final Pose pickup1Pose = new Pose(119,80, heading).mirror();
+    private final Pose pickup2Pose = new Pose(118,60, heading).mirror();
     private final Pose parkPose = new Pose(120,90, heading).mirror();
 
 
@@ -73,7 +75,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
             } else if (stage == 1 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+                processor.override(new ShootBlueAuto());
                 elapsedTime.reset();
                 stage++;
 
@@ -89,7 +91,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 4 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+                processor.override(new ShootBlueAuto());
                 elapsedTime.reset();
                 stage++;
 
@@ -104,14 +106,14 @@ public class BlueCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
 
-            }else if (stage == 7 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+            }else if (stage == 7 && elapsedTime.milliseconds() > 750) {
+                processor.override(new ShootBlueAuto());
                 elapsedTime.reset();
                 stage++;
 
             } else if (stage == 8 && elapsedTime.milliseconds() > 5000) {
-                processor.override(new IntakeBall());
-                robot.intake.turnOffIntake();
+                processor.override(new Reset());
+
                 robot.follower.followPath(park);
                 elapsedTime.reset();
                 stage++;

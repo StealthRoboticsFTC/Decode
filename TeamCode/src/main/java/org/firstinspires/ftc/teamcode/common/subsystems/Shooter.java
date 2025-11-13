@@ -15,14 +15,14 @@ public class Shooter {
     private final DcMotorEx shooterRight;
     private final Servo flap;
 
-    private final static int closeVelocity = 950;
-    private final static int mediumVelocity = 1075;
-    private final static int farVelocity = 1440;
+    private final static int closeVelocity = 925;
+    private final static int mediumVelocity = 1050;
+    private final static int farVelocity = 1450;
     private final static int offVelocity = 0;
 
-    private final static double flapPositionClose = 0.975;
-    private final static double flapPositionMedium= 0.9;
-    private final static double flapPositionFar= 0.8;
+    private final static double flapPositionClose = 0.9;
+    private final static double flapPositionMedium= 0.8;
+    private final static double flapPositionFar= 0.775;
 
     private int targetVelocity  = 0;
 
@@ -63,7 +63,7 @@ public class Shooter {
     public void shootMedium(){
         targetVelocity = mediumVelocity;
         controller.setTargetPosition(mediumVelocity);
-        flap.setPosition(mediumVelocity);
+        flap.setPosition(flapPositionMedium);
     }
 
     public void shooterOff(){

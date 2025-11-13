@@ -7,6 +7,7 @@ public class ShootMedium implements Command{
     @Override
     public void update(Robot robot) {
         if (stage == 0){
+
             robot.intake.turnOffIntake();
             robot.shooter.shootMedium();
             stage++;

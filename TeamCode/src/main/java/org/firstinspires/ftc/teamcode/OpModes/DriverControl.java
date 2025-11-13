@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
+import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
 import org.firstinspires.ftc.teamcode.common.command.ShootFar;
 import org.firstinspires.ftc.teamcode.common.command.ShootMedium;
@@ -44,6 +45,9 @@ public class DriverControl extends LinearOpMode {
         });
         listener.addListener(Button.TRIANGLE_DOWN, ()->{
             processor.override(new ShootFar());
+        });
+        listener.addListener(Button.CROSS_DOWN, ()->{
+            processor.override(new Reset());
         });
 
         robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);

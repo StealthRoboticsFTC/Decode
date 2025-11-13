@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
+import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
+import org.firstinspires.ftc.teamcode.common.command.ShootRedAuto;
 
 @Autonomous
 public class RedCloseAuto extends LinearOpMode {
@@ -73,7 +75,7 @@ public class RedCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
             } else if (stage == 1 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+                processor.override(new ShootRedAuto());
                 elapsedTime.reset();
                 stage++;
 
@@ -89,7 +91,7 @@ public class RedCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 4 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+                processor.override(new ShootRedAuto());
                 elapsedTime.reset();
                 stage++;
 
@@ -104,14 +106,14 @@ public class RedCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
 
-            }else if (stage == 7 && elapsedTime.milliseconds() > 0) {
-                processor.override(new ShootClose());
+            }else if (stage == 7 && elapsedTime.milliseconds() > 750) {
+                processor.override(new ShootRedAuto());
                 elapsedTime.reset();
                 stage++;
 
             } else if (stage == 8 && elapsedTime.milliseconds() > 5000) {
-                processor.override(new IntakeBall());
-                robot.intake.turnOffIntake();
+                processor.override(new Reset());
+
                 robot.follower.followPath(park);
                 elapsedTime.reset();
                 stage++;
