@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
+import org.firstinspires.ftc.teamcode.common.command.ShootBlueAuto;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
 import org.firstinspires.ftc.teamcode.common.command.ShootRedAuto;
 
@@ -26,11 +27,12 @@ public class RedCloseAuto extends LinearOpMode {
     private final Pose scorePose = new Pose(118,110, heading);
     private final Pose pickup1Pose = new Pose(118,80, heading);
     private final Pose pickup2Pose = new Pose(114.5,60, heading);
-    private final Pose parkPose = new Pose(118,90, heading);
+    private final Pose pickup3Pose = new Pose(113,40, heading);
+    private final Pose parkPose = new Pose(118,70, heading);
 
 
 
-    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, park;
+    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3, park;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
@@ -62,15 +64,24 @@ public class RedCloseAuto extends LinearOpMode {
                 .addPath(new BezierLine(pickup2Pose, scorePose))
                 .setConstantHeadingInterpolation(heading)
                 .build();
+        grabPickup3 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(scorePose, pickup3Pose))
+                .setConstantHeadingInterpolation(heading)
+                .build();
+
+        scorePickup3 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(pickup3Pose, scorePose))
+                .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
+                .build();
         park = robot.follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, parkPose))
-                .setConstantHeadingInterpolation(heading)
+                .setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading())
                 .build();
 
         waitForStart();
         while (!isStopRequested()){
             if (stage == 0){
-                robot.follower.setMaxPower(0.75);
+                robot.follower.setMaxPower(0.775);
                 robot.follower.followPath(scorePreload);
                 elapsedTime.reset();
                 stage++;
@@ -79,7 +90,7 @@ public class RedCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
 
-            } else if (stage == 2 && elapsedTime.milliseconds() > 5000) {
+            } else if (stage == 2 && elapsedTime.milliseconds() > 4500) {
                 processor.override(new IntakeBall());
                 robot.follower.followPath(grabPickup1);
                 elapsedTime.reset();
@@ -95,7 +106,7 @@ public class RedCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
 
-            } else if (stage == 5 && elapsedTime.milliseconds() > 5000) {
+            } else if (stage == 5 && elapsedTime.milliseconds() > 4500) {
                 processor.override(new IntakeBall());
                 robot.follower.followPath(grabPickup2);
                 elapsedTime.reset();
@@ -111,13 +122,25 @@ public class RedCloseAuto extends LinearOpMode {
                 elapsedTime.reset();
                 stage++;
 
-            } else if (stage == 8 && elapsedTime.milliseconds() > 5000) {
-                processor.override(new Reset());
+            } else if (stage == 8 && elapsedTime.milliseconds() > 4500) {
+                processor.override(new IntakeBall());
 
-                robot.follower.followPath(park);
+                robot.follower.followPath(grabPickup3);
                 elapsedTime.reset();
                 stage++;
 
+            } else if (stage == 9 && !robot.follower.isBusy()) {
+                robot.follower.followPath(scorePickup3);
+                elapsedTime.reset();
+                stage++;
+            } else if (stage == 10 && elapsedTime.milliseconds()>1750) {
+                processor.override(new ShootRedAuto());
+                elapsedTime.reset();
+                stage++;
+            } else if (stage == 11 && elapsedTime.milliseconds() > 4500) {
+                processor.override(new Reset());
+                robot.follower.followPath(park);
+                stage++;
             }
             robot.update();
             processor.update(robot);

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
-import org.firstinspires.ftc.teamcode.common.command.ShootFar;
+import org.firstinspires.ftc.teamcode.common.command.ShootFarRed;
 @Autonomous
 
 public class RedFarAuto extends LinearOpMode {
@@ -45,7 +45,7 @@ public class RedFarAuto extends LinearOpMode {
        while (!isStopRequested()){
            if (stage == 0){
                robot.follower.setMaxPower(0.25);
-               processor.override(new ShootFar());
+               processor.override(new ShootFarRed());
                robot.follower.followPath(score);
                elapsedTime.reset();
                stage++;

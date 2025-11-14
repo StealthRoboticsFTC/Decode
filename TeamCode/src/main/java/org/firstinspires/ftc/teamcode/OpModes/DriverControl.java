@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
-import org.firstinspires.ftc.teamcode.common.command.ShootFar;
+import org.firstinspires.ftc.teamcode.common.command.ShootFarRed;
 import org.firstinspires.ftc.teamcode.common.command.ShootMedium;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
@@ -44,7 +44,7 @@ public class DriverControl extends LinearOpMode {
             processor.override(new OuttakeBall());
         });
         listener.addListener(Button.TRIANGLE_DOWN, ()->{
-            processor.override(new ShootFar());
+            processor.override(new ShootFarRed());
         });
         listener.addListener(Button.CROSS_DOWN, ()->{
             processor.override(new Reset());

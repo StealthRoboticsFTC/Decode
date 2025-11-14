@@ -13,7 +13,7 @@ public class Turret {
     private final static int redClose = 2000;
     private final static int redFar = 1500;
     private final static int blueClose = -2000;
-    private final static int blueFar = -1000;
+    private final static int blueFar = -1500;
 
     private final static int reset = 0;
     private int turretTargetPosition = 0;
@@ -51,6 +51,9 @@ public class Turret {
 
     public void  moveTurretRedFar(){
         controller.setTargetPosition(redFar);
+    }
+    public void  moveTurretBlueFar(){
+        controller.setTargetPosition(blueFar);
     }
     public void turretReset(){
         controller.setTargetPosition(reset);

@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.common.command;
 
 import org.firstinspires.ftc.teamcode.common.Robot;
 
-public class ShootFar implements Command{
+public class ShootFarBlue implements Command{
     private int stage = 0;
     @Override
     public void update(Robot robot) {
         if (stage == 0){
-            robot.turret.moveTurretRedFar();
+            robot.turret.moveTurretBlueFar();
 
             robot.intake.turnOffIntake();
 
