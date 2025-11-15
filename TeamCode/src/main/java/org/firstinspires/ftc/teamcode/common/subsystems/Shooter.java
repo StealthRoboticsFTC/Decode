@@ -15,9 +15,11 @@ public class Shooter {
     private final DcMotorEx shooterRight;
     private final Servo flap;
 
-    private final static int closeVelocity = 925;
+    private final static int closeVelocity = 915;
     private final static int mediumVelocity = 1085;
     private final static int farVelocity = 1385;
+
+    private final static int reverse = -250;
     private final static int offVelocity = 0;
 
     private final static double flapPositionClose = 0.9;
@@ -71,9 +73,15 @@ public class Shooter {
         controller.setTargetPosition(offVelocity);
     }
 
+    public void reverseShooter(){
+        targetVelocity = reverse;
+        controller.setTargetPosition(reverse);
+    }
+
     public boolean atTargetVelocity(){
         return shooterLeft.getVelocity() > targetVelocity - 50 && shooterLeft.getVelocity() < targetVelocity + 50;
     }
+
     public double getVelocity(){
         return shooterLeft.getVelocity();
     }

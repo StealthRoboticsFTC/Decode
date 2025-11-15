@@ -9,7 +9,9 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
+import org.firstinspires.ftc.teamcode.common.command.ReverseShooter;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
+import org.firstinspires.ftc.teamcode.common.command.ShootFar;
 import org.firstinspires.ftc.teamcode.common.command.ShootFarRed;
 import org.firstinspires.ftc.teamcode.common.command.ShootMedium;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
@@ -44,10 +46,14 @@ public class DriverControl extends LinearOpMode {
             processor.override(new OuttakeBall());
         });
         listener.addListener(Button.TRIANGLE_DOWN, ()->{
-            processor.override(new ShootFarRed());
+            processor.override(new ShootFar());
         });
         listener.addListener(Button.CROSS_DOWN, ()->{
             processor.override(new Reset());
+        });
+
+        listener.addListener(Button.CIRCLE_DOWN, ()->{
+            processor.override(new ReverseShooter());
         });
 
         robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
