@@ -79,6 +79,8 @@ public class BlueCloseAuto extends LinearOpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading())
                 .build();
 
+        w
+
         waitForStart();
         while (!isStopRequested()){
             if (stage == 0){

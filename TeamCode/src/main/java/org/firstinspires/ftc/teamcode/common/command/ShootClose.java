@@ -8,13 +8,10 @@ public class ShootClose implements Command{
     public void update(Robot robot) {
         if (stage == 0){
 
-            robot.intake.turnOffIntake();
-
             robot.shooter.shootClose();
             stage++;
         } else if (stage == 1 && robot.shooter.atTargetVelocity()) {
 
-            robot.intake.turnOnIntake();
             robot.transfer.turnOnTransfer();
             stage++;
         }
