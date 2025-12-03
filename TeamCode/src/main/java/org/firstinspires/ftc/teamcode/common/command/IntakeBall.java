@@ -8,9 +8,10 @@ public class IntakeBall implements Command{
     public void update(Robot robot) {
         if (stage == 0){
 
-            robot.transfer.turnOffTransfer();
+            robot.transfer.reverseTransfer();
             robot.shooter.shooterOff();
             robot.intake.turnOnIntake();
+            Robot.useAutoAim = false;
 
             stage++;
         }

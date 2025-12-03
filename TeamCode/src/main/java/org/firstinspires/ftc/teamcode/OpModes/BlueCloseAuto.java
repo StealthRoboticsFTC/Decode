@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.ShootBlueAuto;
 import org.firstinspires.ftc.teamcode.common.command.ShootClose;
+import org.firstinspires.ftc.teamcode.common.subsystems.Limelight;
 
 @Autonomous
 public class BlueCloseAuto extends LinearOpMode {
@@ -79,10 +80,11 @@ public class BlueCloseAuto extends LinearOpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading())
                 .build();
 
-        w
+
 
         waitForStart();
         while (!isStopRequested()){
+
             if (stage == 0){
                 robot.follower.setMaxPower(0.775);
                 robot.follower.followPath(scorePreload);

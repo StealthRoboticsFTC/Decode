@@ -9,11 +9,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
-import org.firstinspires.ftc.teamcode.common.command.ReverseShooter;
-import org.firstinspires.ftc.teamcode.common.command.ShootClose;
-import org.firstinspires.ftc.teamcode.common.command.ShootFar;
-import org.firstinspires.ftc.teamcode.common.command.ShootFarRed;
-import org.firstinspires.ftc.teamcode.common.command.ShootMedium;
+import org.firstinspires.ftc.teamcode.common.command.Shoot;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
 @TeleOp
@@ -34,31 +30,32 @@ public class DriverControl extends LinearOpMode {
         processor = new Processor();
 
         listener.addListener(Button.R_TRIGGER_DOWN, ()->{
-            processor.override(new ShootMedium());
+            processor.override(new Shoot());
         });
         listener.addListener(Button.R_BUMPER_DOWN, ()->{
-            processor.override(new ShootClose());
+            Robot.useAutoAim = true;
+            Robot.manul = false;
         });
         listener.addListener(Button.L_TRIGGER_DOWN, ()->{
             processor.override(new IntakeBall());
+            Robot.useAutoAim = false;
         });
         listener.addListener(Button.L_BUMPER_DOWN, ()->{
             processor.override(new OuttakeBall());
         });
-        listener.addListener(Button.TRIANGLE_DOWN, ()->{
-            processor.override(new ShootFar());
-        });
+
         listener.addListener(Button.CROSS_DOWN, ()->{
             processor.override(new Reset());
+            Robot.useAutoAim = false;
+            Robot.manul = true;
         });
 
-        listener.addListener(Button.CIRCLE_DOWN, ()->{
-            processor.override(new ReverseShooter());
-        });
+
 
         robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         robot.follower.update();
         waitForStart();
+        robot.limelight.setPipLine(Robot.color);
         robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(true);
 

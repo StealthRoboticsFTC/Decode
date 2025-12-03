@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.Command;
 
 public class Shooter {
@@ -26,9 +27,9 @@ public class Shooter {
     private final static double flapPositionMedium= 0.8;
     private final static double flapPositionFar= 0.75;
 
-    private int targetVelocity  = 0;
 
-    private final static double kp = 0.005;
+
+    private final static double kp = 0.0075;
     private final static double ki = 0;
     private final static double kd = 0;
     private final static double kf = 0.0006675;
@@ -52,45 +53,58 @@ public class Shooter {
     }
 
     public void shootFar(){
-        targetVelocity = farVelocity;
+
         controller.setTargetPosition(farVelocity);
         flap.setPosition(flapPositionFar);
     }
     public void shootClose(){
-        targetVelocity = closeVelocity;
+
         controller.setTargetPosition(closeVelocity);
         flap.setPosition(flapPositionClose);
     }
 
     public void shootMedium(){
-        targetVelocity = mediumVelocity;
+
         controller.setTargetPosition(mediumVelocity);
         flap.setPosition(flapPositionMedium);
     }
 
     public void shooterOff(){
-        targetVelocity = offVelocity;
+
         controller.setTargetPosition(offVelocity);
     }
 
     public void reverseShooter(){
-        targetVelocity = reverse;
+
         controller.setTargetPosition(reverse);
     }
 
+    public void setTargetVelocity(double targetVelocity, double flapPos){
+        flap.setPosition(flapPos);
+
+        controller.setTargetPosition(targetVelocity);
+
+    }
+
     public boolean atTargetVelocity(){
-        return shooterLeft.getVelocity() > targetVelocity - 50 && shooterLeft.getVelocity() < targetVelocity + 50;
+        return shooterLeft.getVelocity() > controller.getTargetPosition() - 50 && shooterLeft.getVelocity() < controller.getTargetPosition() + 50;
     }
 
     public double getVelocity(){
         return shooterLeft.getVelocity();
     }
     public double getTargetVelocity(){
-        return targetVelocity;
+        return controller.getTargetPosition();
     }
 
-    public void update(){
-        controller.updateFeedForwardInput(targetVelocity);
+    public void update( double LimeLightTargetVelocity, double LimeLightFlapPos){
+        if (Robot.useAutoAim){
+            controller.setTargetPosition(LimeLightTargetVelocity);
+            flap.setPosition(LimeLightFlapPos);
+        } else if (!Robot.manul) {
+            controller.setTargetPosition(1000);
+        }
+        controller.updateFeedForwardInput(controller.getTargetPosition());
         controller.updatePosition(shooterLeft.getVelocity());
         shooterRight.setPower(controller.run());
         shooterLeft.setPower(controller.run());

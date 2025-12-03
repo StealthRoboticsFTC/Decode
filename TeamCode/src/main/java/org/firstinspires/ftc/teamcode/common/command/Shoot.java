@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.common.command;
 
 import org.firstinspires.ftc.teamcode.common.Robot;
 
-public class ShootMedium implements Command{
+public class Shoot implements Command{
     private int stage = 0;
     @Override
     public void update(Robot robot) {
