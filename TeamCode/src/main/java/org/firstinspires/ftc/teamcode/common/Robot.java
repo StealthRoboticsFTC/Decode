@@ -33,9 +33,6 @@ public class Robot {
 
 
     public Robot(HardwareMap hardwareMap){
-        color = Color.BLUE;
-        useAutoAim = true;
-        manul = false;
 
         double dt = System.currentTimeMillis() - lastTime;
         follower = Constants.createFollower(hardwareMap);

@@ -17,14 +17,14 @@ public class Shooter {
     private final Servo flap;
 
     private final static int closeVelocity = 915;
-    private final static int mediumVelocity = 1085;
+    private final static int mediumVelocity = 1100;
     private final static int farVelocity = 1385;
 
     private final static int reverse = -250;
     private final static int offVelocity = 0;
 
     private final static double flapPositionClose = 0.9;
-    private final static double flapPositionMedium= 0.8;
+    private final static double flapPositionMedium= 0.6675;
     private final static double flapPositionFar= 0.75;
 
 

@@ -4,6 +4,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
@@ -12,6 +13,8 @@ import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
+import org.firstinspires.ftc.teamcode.common.enums.Color;
+
 @TeleOp
 public class DriverControl extends LinearOpMode {
     private Robot robot;
@@ -38,7 +41,7 @@ public class DriverControl extends LinearOpMode {
         });
         listener.addListener(Button.L_TRIGGER_DOWN, ()->{
             processor.override(new IntakeBall());
-            Robot.useAutoAim = false;
+
         });
         listener.addListener(Button.L_BUMPER_DOWN, ()->{
             processor.override(new OuttakeBall());
@@ -46,8 +49,13 @@ public class DriverControl extends LinearOpMode {
 
         listener.addListener(Button.CROSS_DOWN, ()->{
             processor.override(new Reset());
-            Robot.useAutoAim = false;
-            Robot.manul = true;
+
+        });
+        listener.addListener(Button.CIRCLE_DOWN, ()->{
+            Robot.color = Color.RED;
+        });
+        listener.addListener(Button.SQUARE_DOWN, ()->{
+            Robot.color = Color.BLUE;
         });
 
 
@@ -55,14 +63,16 @@ public class DriverControl extends LinearOpMode {
         robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         robot.follower.update();
         waitForStart();
-        robot.limelight.setPipLine(Robot.color);
+        Robot.useAutoAim = false;
+        Robot.manul = false;
+
         robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(true);
 
         while (!isStopRequested()){
 
             robot.follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
-
+            robot.limelight.setPipLine(Robot.color);
             robot.update();
             listener.update();
             processor.update(robot);

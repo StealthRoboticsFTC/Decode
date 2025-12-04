@@ -11,6 +11,8 @@ public class Reset implements Command{
             robot.transfer.turnOffTransfer();
             robot.intake.turnOffIntake();
             robot.turret.turretReset();
+            Robot.useAutoAim = false;
+            Robot.manul = true;
             stage++;
         }
     }
