@@ -11,7 +11,7 @@ public class Transfer {
     private final CRServo transferRight;
     private final static double transferOn = 1;
     private final static double transferOff= 0;
-    private final static double reverseTransfer= -0.5;
+    private final static double reverseTransfer= -0.75;
 
     public Transfer(HardwareMap hardwareMap){
         transferLeft = hardwareMap.get(CRServo.class, "servo_tl");

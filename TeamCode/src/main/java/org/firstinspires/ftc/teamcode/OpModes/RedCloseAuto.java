@@ -27,11 +27,11 @@ public class RedCloseAuto extends LinearOpMode {
     private final double heading = Math.toRadians(0);
 
     private final Pose startPose = new Pose(117,132,Math.toRadians(315));
-    private final Pose scorePose = new Pose(83,83, heading);
+    private final Pose scorePose = new Pose(90,90, Math.toRadians(315));
     private final Pose pickup1Pose = new Pose(125,83, heading);
-    private final Pose pickup2Pose = new Pose(125,60, heading);
-    private final Pose pickup3Pose = new Pose(125,36, heading);
-    private final Pose parkPose = new Pose(125,75, Math.toRadians(270));
+    private final Pose pickup2Pose = new Pose(130,60, heading);
+    private final Pose pickup3Pose = new Pose(130,36, heading);
+    private final Pose parkPose = new Pose(120,75, Math.toRadians(270));
 
 
 
@@ -88,11 +88,13 @@ public class RedCloseAuto extends LinearOpMode {
         robot.limelight.setPipLine(Robot.color);
         while (!isStopRequested()){
             if (stage == 0){
+
+                Robot.useAutoAim = true;
                 robot.follower.setMaxPower(1);
                 robot.follower.followPath(scorePreload);
                 elapsedTime.reset();
                 stage++;
-            } else if (stage == 1 && elapsedTime.milliseconds() > 1000) {
+            } else if (stage == 1 && !robot.follower.isBusy()) {
                 processor.override(new Shoot());
                 elapsedTime.reset();
                 stage++;
