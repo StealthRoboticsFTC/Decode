@@ -27,10 +27,10 @@ public class BlueCloseAuto extends LinearOpMode {
     private final double heading = Math.toRadians(0);
 
     private final Pose startPose = new Pose(117,132,Math.toRadians(315)).mirror();
-    private final Pose scorePose = new Pose(90,90, heading).mirror();
-    private final Pose pickup1Pose = new Pose(125,74, heading).mirror();
-    private final Pose pickup2Pose = new Pose(133,53, heading).mirror();
-    private final Pose pickup3Pose = new Pose(133,33, heading).mirror();
+    private final Pose scorePose = new Pose(90,90, Math.toRadians(315)).mirror();
+    private final Pose pickup1Pose = new Pose(125,83, heading).mirror();
+    private final Pose pickup2Pose = new Pose(132,60, heading).mirror();
+    private final Pose pickup3Pose = new Pose(125,35, heading).mirror();
     private final Pose parkPose = new Pose(120,75, Math.toRadians(270)).mirror();
 
 
