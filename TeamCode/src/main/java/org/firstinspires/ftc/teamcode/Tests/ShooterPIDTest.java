@@ -16,7 +16,7 @@ public class ShooterPIDTest extends LinearOpMode {
     public static double kp = 0.005;
     public static double ki = 0;
     public static double kd = 0;
-    public static double kf = 0.0006675;
+    public static double kf = 0.0005;
     public static double servoPosition = 0.8;
     DcMotorEx shooterMotorLeft;
     DcMotorEx shooterMotorRight;

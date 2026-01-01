@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 public class Menu {
@@ -16,12 +16,6 @@ public class Menu {
     private ButtonListener listener;
     private Telemetry telemetry;
 
-    /**
-     * Creates a menu from a listener, telemetry, and list of screens
-     * @param listener a button listener
-     * @param telemetry the telemetry
-     * @param screens the list of screens
-     */
     public Menu(ButtonListener listener, Telemetry telemetry, List<Screen> screens) {
         this.listener = listener;
         this.telemetry = telemetry;
@@ -34,53 +28,31 @@ public class Menu {
         listener.addListener(Button.CROSS_DOWN, this::select);
     }
 
-    /**
-     * Creates a menu from a listener, telemetry, and creates an empty list of screens
-     * @param listener a button listener
-     * @param telemetry the telemetry
-     */
     public Menu(ButtonListener listener, Telemetry telemetry) {
         this(listener, telemetry, new ArrayList<>());
     }
 
-    /**
-     * Adds a screen to the menu in order
-     * @param screen the screen to add
-     * @return this
-     */
     public Menu addScreen(Screen screen) {
         screens.add(screen);
         return this;
     }
 
-    /**
-     * Moves back a screen
-     */
     private void back(){
         currentScreen = Math.max(currentScreen-1, 0);
     }
 
-    /**
-     * Moves the selection up on the current screen
-     */
     private void scrollUp() {
         if (currentScreen < screens.size()) {
             screens.get(currentScreen).scrollUp();
         }
     }
 
-    /**
-     * Moves the selection down on the current screen
-     */
     private void scrollDown() {
         if (currentScreen < screens.size()) {
             screens.get(currentScreen).scrollDown();
         }
     }
 
-    /**
-     * Displays the current view
-     */
     private void display() {
         if (currentScreen < screens.size()) {
             telemetry.addLine(String.format("Select: %s", screens.get(currentScreen).toString()));
@@ -90,38 +62,24 @@ public class Menu {
         }
     }
 
-    /**
-     * Checks if all screens have been completed
-     * @return the competion status
-     */
     public boolean isComplete() {
         return currentScreen > screens.size();
     }
 
-    /**
-     * Updates the listener and displays the content
-     */
-    public void update() {
-        listener.update();
-        display();
-
-        if (isComplete()) {
-            telemetry.addLine("Ready");
-            telemetry.update();
+    public void runBlocking() {
+        while (!isComplete()) {
+            listener.update();
+            display();
         }
+        telemetry.addLine("Ready");
+        telemetry.update();
     }
 
-    /**
-     * Make a selection and move to the next screen
-     */
     private void select() {
         currentScreen++;
     }
 
-    /**
-     * Displays a summary of the final selections
-     * @return the summary
-     */
+
     public Menu summary() {
         telemetry.addLine("Summary:");
         for (Screen screen : screens) {
@@ -130,5 +88,9 @@ public class Menu {
         telemetry.addLine("Please Confirm");
         telemetry.update();
         return this;
+    }
+
+    public List<Object> getSelections() {
+        return screens.stream().map(Screen::getSelected).collect(Collectors.toList());
     }
 }

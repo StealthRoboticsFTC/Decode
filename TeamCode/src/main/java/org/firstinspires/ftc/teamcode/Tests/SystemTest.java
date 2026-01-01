@@ -6,56 +6,34 @@ import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp
 @Configurable
 public class SystemTest extends LinearOpMode {
-    public static boolean useTurret = false;
-    public static boolean useShooter = false;
-    public static boolean useIntake = false;
-    public static boolean useTransfer = false;
+
     public static boolean usePins = false;
 
     public static int turretTargetPosition = 0;
-    public static double turretKp = 0;
-    public static double turretKi = 0;
-    public static double turretKd = 0;
-    public static double turretKf = 0;
+
 
     public static int shooterTargetVelocity = 0;
-    public static double shooterKp = 0;
-    public static double shooterKi = 0;
-    public static double shooterKd = 0;
-    public static double shooerKf = 0;
-    public static double flapPosition = 0.5;
 
-    DcMotorEx shooterMotorLeft;
-    DcMotorEx shooterMotorRight;
-    Servo flap;
-    PIDFController shooterController;
-
-    DcMotorEx turret;
-    PIDFController turretController;
+    public static double flapPosition = 0.8;
 
     public static double intakePower = 0;
-    DcMotor intakeMotor;
-
-    CRServo transferLeft;
-    CRServo transferRight;
 
     public static double transferPower = 0;
 
-    Servo leftPin;
-    Servo rightPin;
-    Servo centerPin;
-
-    public static double leftPinPositon = 0.25;
-    public static double centerPinPosition = 0.5;
-    public static double rightPinPosition = 0.75;
+    public static double leftPinPositon = 0.325;
+    public static double centerPinPosition = 0.425;
+    public static double rightPinPosition = 0.85;
 
 
 
@@ -64,34 +42,34 @@ public class SystemTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
+        DcMotorEx turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turretController = new PIDFController(new PIDFCoefficients(turretKp, turretKi, turretKd, turretKf));
+        PIDFController turretController = new PIDFController(new PIDFCoefficients(-0.000425, 0, -0.000015,-0.0000325));
 
-        flap = hardwareMap.get(Servo.class, "servo_sf");
-        shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "motor_sl");
+        Servo flap = hardwareMap.get(Servo.class, "servo_sf");
+        DcMotorEx shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "motor_sl");
         shooterMotorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        shooterMotorRight = hardwareMap.get(DcMotorEx.class, "motor_sr");
+        DcMotorEx shooterMotorRight = hardwareMap.get(DcMotorEx.class, "motor_sr");
         shooterMotorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterController = new PIDFController(new PIDFCoefficients(shooterKp, shooterKi, shooterKd, shooerKf));
+        PIDFController shooterController = new PIDFController(new PIDFCoefficients(0.005, 0, 0, 0.0005));
 
-        intakeMotor = hardwareMap.get(DcMotor.class, "motor_im");
+        DcMotorEx intakeMotor = hardwareMap.get(DcMotorEx.class, "motor_im");
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        transferLeft = hardwareMap.get(CRServo.class, "servo_tl");
+        CRServo transferLeft = hardwareMap.get(CRServo.class, "servo_tl");
         transferLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        transferRight = hardwareMap.get(CRServo.class, "servo_tr");
+        CRServo transferRight = hardwareMap.get(CRServo.class, "servo_tr");
 
-        leftPin = hardwareMap.get(Servo.class,"servo_lp");
-        centerPin = hardwareMap.get(Servo.class,"servo_cp");
-        rightPin = hardwareMap.get(Servo.class,"servo_rp");
+        Servo leftPin = hardwareMap.get(Servo.class,"servo_lp");
+        Servo centerPin = hardwareMap.get(Servo.class,"servo_cp");
+        Servo rightPin = hardwareMap.get(Servo.class,"servo_rp");
 
         waitForStart();
         while (!isStopRequested()){
-            if (useTurret){
+            if (turretTargetPosition != 0){
                 turretController.setTargetPosition(turretTargetPosition);
                 turretController.updatePosition(turret.getCurrentPosition());
                 turret.setPower(turretController.run());
@@ -100,7 +78,8 @@ public class SystemTest extends LinearOpMode {
                 telemetry.addData("TargetPosition", turretTargetPosition);
                 telemetry.update();
             }
-            if (useShooter){
+            if (shooterTargetVelocity != 0){
+                shooterController.updateFeedForwardInput(shooterTargetVelocity);
                 shooterController.setTargetPosition(shooterTargetVelocity);
                 shooterController.updatePosition(shooterMotorLeft.getVelocity());
                 shooterMotorRight.setPower(shooterController.run());
@@ -111,12 +90,18 @@ public class SystemTest extends LinearOpMode {
                 telemetry.addData("Power", shooterController.run());
                 telemetry.update();
             }
-            if (useIntake){
+            if (intakePower != 0){
                 intakeMotor.setPower(intakePower);
+                telemetry.addData("current", intakeMotor.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("velocity", intakeMotor.getVelocity());
+
+
+                telemetry.update();
             }
-            if (useTransfer){
+            if (transferPower != 0){
                 transferRight.setPower(transferPower);
                 transferLeft.setPower(transferPower);
+
             }
             if (usePins){
                 centerPin.setPosition(centerPinPosition);

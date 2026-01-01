@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
 @TeleOp
 @Configurable
 public class TurretPIDTest extends LinearOpMode {
-    public static int turretTargetPosition = 0;
+    public static int turretTargetAngle = 0;
     public static double kp = 0;
     public static double ki = 0;
     public static double kd = 0;
@@ -29,21 +28,26 @@ public class TurretPIDTest extends LinearOpMode {
         turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         controller = new PIDFController(new PIDFCoefficients(kp, ki, kd, kf));
         waitForStart();
         while (!isStopRequested()){
+            double currentAngle;
+            if (turret.getCurrentPosition() != 0){
+                currentAngle = -360/((4096*((double) 70 /14))/ turret.getCurrentPosition());
+            } else {
+                currentAngle = 0;
+            }
             controller.setD(kd);
             controller.setF(kf);
             controller.setP(kp);
             controller.setI(ki);
-            controller.updateFeedForwardInput(turretTargetPosition);
-            controller.setTargetPosition(turretTargetPosition);
-            controller.updatePosition(turret.getCurrentPosition());
+            controller.updateFeedForwardInput(turretTargetAngle);
+            controller.setTargetPosition(turretTargetAngle);
+            controller.updatePosition(currentAngle);
             turret.setPower(controller.run());
             telemetry.addData("power", controller.run());
-            telemetry.addData("currentPosition", turret.getCurrentPosition());
-            telemetry.addData("TargetPosition", turretTargetPosition);
+            telemetry.addData("currentAngle", currentAngle);
+            telemetry.addData("TargetAngle", turretTargetAngle);
             telemetry.update();
         }
 
