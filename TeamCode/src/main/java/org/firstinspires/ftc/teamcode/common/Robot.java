@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.enums.Color;
+import org.firstinspires.ftc.teamcode.common.enums.Position;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.common.subsystems.Pins;
@@ -18,6 +20,9 @@ public class Robot {
     private long lastTime;
 
     public static Color color ;
+
+    public static Position position;
+    public static Pose robotPos;
 
     public static Boolean useAutoAim;
     public static Boolean manul;
