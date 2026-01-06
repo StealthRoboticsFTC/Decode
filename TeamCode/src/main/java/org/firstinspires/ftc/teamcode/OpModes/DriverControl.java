@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
+import org.firstinspires.ftc.teamcode.common.command.Sort;
 import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
@@ -52,10 +53,10 @@ public class DriverControl extends LinearOpMode {
 
         });
         listener.addListener(Button.CIRCLE_DOWN, ()->{
-            Robot.color = Color.RED;
+            processor.override(new Sort(21));
         });
         listener.addListener(Button.SQUARE_DOWN, ()->{
-            Robot.color = Color.BLUE;
+            robot.pins.closeAllPin();
         });
 
 
@@ -76,6 +77,7 @@ public class DriverControl extends LinearOpMode {
             robot.update();
             listener.update();
             processor.update(robot);
+            telemetry.addData("Colors", robot.colorSensors.getColors());
             telemetry.addData("atVelocity", robot.shooter.atTargetVelocity());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());

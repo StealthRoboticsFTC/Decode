@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -67,6 +68,15 @@ public class SystemTest extends LinearOpMode {
         Servo centerPin = hardwareMap.get(Servo.class,"servo_cp");
         Servo rightPin = hardwareMap.get(Servo.class,"servo_rp");
 
+        ColorSensor leftColorSensor = hardwareMap.get(ColorSensor.class, "sensor_cl");
+        ColorSensor rightColorSensor = hardwareMap.get(ColorSensor.class, "sensor_cr");
+        ColorSensor centerColorSensor = hardwareMap.get(ColorSensor.class, "sensor_cc");
+
+        Servo leftLight = hardwareMap.get(Servo.class, "light_ll");
+        Servo rightLight = hardwareMap.get(Servo.class, "light_rl");
+        Servo centerLight = hardwareMap.get(Servo.class, "light_cl");
+
+
         waitForStart();
         while (!isStopRequested()){
             if (turretTargetPosition != 0){
@@ -92,11 +102,8 @@ public class SystemTest extends LinearOpMode {
             }
             if (intakePower != 0){
                 intakeMotor.setPower(intakePower);
-                telemetry.addData("current", intakeMotor.getCurrent(CurrentUnit.MILLIAMPS));
-                telemetry.addData("velocity", intakeMotor.getVelocity());
 
 
-                telemetry.update();
             }
             if (transferPower != 0){
                 transferRight.setPower(transferPower);
@@ -108,6 +115,52 @@ public class SystemTest extends LinearOpMode {
                 leftPin.setPosition(leftPinPositon);
                 rightPin.setPosition(rightPinPosition);
             }
+
+            if (leftColorSensor.blue()<100 &&leftColorSensor.red()<100 && leftColorSensor.green()<100){
+                telemetry.addData("Left Color", "none");
+                leftLight.setPosition(0.28);
+
+
+            }
+            else if(leftColorSensor.green() > leftColorSensor.blue() && leftColorSensor.green() > leftColorSensor.red()){
+                telemetry.addData("Left Color", "Green");
+                leftLight.setPosition(0.444);
+            }
+            else {
+                telemetry.addData("Left Color", "Purple");
+                leftLight.setPosition(0.722);
+
+            }
+            if (rightColorSensor.blue()<100 &&rightColorSensor.red()<100 && rightColorSensor.green()<100){
+                telemetry.addData("Right Color", "none");
+                rightLight.setPosition(0.28);
+
+            }
+            else if(rightColorSensor.green() > rightColorSensor.blue() && rightColorSensor.green() > rightColorSensor.red()){
+                telemetry.addData("Right Color", "Green");
+                rightLight.setPosition(0.444);
+            }
+            else {
+                telemetry.addData("Right Color", "Purple");
+                rightLight.setPosition(0.722);
+            }
+            if (centerColorSensor.blue()<100 &&centerColorSensor.red()<100 && centerColorSensor.green()<100){
+                telemetry.addData("CenterColor", "none");
+                centerLight.setPosition(0.28);
+
+            }
+            else if(centerColorSensor.green() > centerColorSensor.blue() && centerColorSensor.green() > centerColorSensor.red()){
+                telemetry.addData("Center Color", "Green");
+                centerLight.setPosition(0.444);
+
+
+            }
+            else {
+                telemetry.addData("Center Color", "Purple");
+                centerLight.setPosition(0.277);
+            }
+
+            telemetry.update();
 
 
         }

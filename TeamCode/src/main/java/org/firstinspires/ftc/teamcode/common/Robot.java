@@ -5,7 +5,9 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.enums.Color;
+import org.firstinspires.ftc.teamcode.common.subsystems.ColorSensors;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.common.subsystems.Lights;
 import org.firstinspires.ftc.teamcode.common.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.common.subsystems.Pins;
 import org.firstinspires.ftc.teamcode.common.subsystems.Shooter;
@@ -29,6 +31,8 @@ public class Robot {
     public Limelight limelight;
 
     public Pins pins;
+    public ColorSensors colorSensors;
+    public Lights lights;
     public Turret turret;
 
 
@@ -40,6 +44,8 @@ public class Robot {
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
         pins = new Pins(hardwareMap);
+        colorSensors = new ColorSensors(hardwareMap);
+        lights = new Lights(hardwareMap);
         turret = new Turret(hardwareMap);
         limelight = new Limelight(hardwareMap);
         lastTime = System.currentTimeMillis();
@@ -50,6 +56,7 @@ public class Robot {
         follower.update();
         shooter.update(limelight.getShooterTargetVelocity(), limelight.getFlapPos());
         turret.update(limelight.turretCurrentPos());
+        lights.setLights(colorSensors.getColors());
 
 
     }

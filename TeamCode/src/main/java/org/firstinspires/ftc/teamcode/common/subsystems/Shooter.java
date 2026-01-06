@@ -102,7 +102,7 @@ public class Shooter {
             controller.setTargetPosition(LimeLightTargetVelocity);
             flap.setPosition(LimeLightFlapPos);
         } else if (!Robot.manul) {
-            controller.setTargetPosition(1000);
+            controller.setTargetPosition(0);
         }
         controller.updateFeedForwardInput(controller.getTargetPosition());
         controller.updatePosition(shooterLeft.getVelocity());
