@@ -26,6 +26,8 @@ public class Sort implements Command{
     @Override
     public void update(Robot robot) {
         if (stage == 0){
+            robot.intake.turnOnIntake();
+            robot.transfer.turnOnTransfer();
             currentColors = robot.colorSensors.getColors();
             stage++;
         } else if (stage == 1){

@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.Tests;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -14,12 +18,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 @Configurable
 public class SystemTest extends LinearOpMode {
 
+    private final Pose goalPos = new Pose(144, 144, Math.toRadians(45));
+
     public static boolean usePins = false;
+
+    public static boolean turretAutoAim = false;
 
     public static int turretTargetPosition = 0;
 
@@ -32,9 +41,9 @@ public class SystemTest extends LinearOpMode {
 
     public static double transferPower = 0;
 
-    public static double leftPinPositon = 0.325;
-    public static double centerPinPosition = 0.425;
-    public static double rightPinPosition = 0.85;
+    public static double leftPinPositon = 0;
+    public static double centerPinPosition = 1;
+    public static double rightPinPosition = 0.55;
 
 
 
@@ -45,8 +54,8 @@ public class SystemTest extends LinearOpMode {
 
         DcMotorEx turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        PIDFController turretController = new PIDFController(new PIDFCoefficients(-0.000425, 0, -0.000015,-0.0000325));
-
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PIDFController turretController =  new PIDFController(new PIDFCoefficients(0.05 , 0, 0.002, 0));
         Servo flap = hardwareMap.get(Servo.class, "servo_sf");
         DcMotorEx shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "motor_sl");
         shooterMotorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -54,7 +63,7 @@ public class SystemTest extends LinearOpMode {
 
         DcMotorEx shooterMotorRight = hardwareMap.get(DcMotorEx.class, "motor_sr");
         shooterMotorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        PIDFController shooterController = new PIDFController(new PIDFCoefficients(0.005, 0, 0, 0.0005));
+        PIDFController shooterController = new PIDFController(new PIDFCoefficients(0.0075, 0, 0, 0.0005));
 
         DcMotorEx intakeMotor = hardwareMap.get(DcMotorEx.class, "motor_im");
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -76,8 +85,15 @@ public class SystemTest extends LinearOpMode {
         Servo rightLight = hardwareMap.get(Servo.class, "light_rl");
         Servo centerLight = hardwareMap.get(Servo.class, "light_cl");
 
+        Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limeLight");
+
+        Follower follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
+
 
         waitForStart();
+        limelight.pipelineSwitch(0);
+        limelight.start();
         while (!isStopRequested()){
             if (turretTargetPosition != 0){
                 turretController.setTargetPosition(turretTargetPosition);
@@ -95,9 +111,11 @@ public class SystemTest extends LinearOpMode {
                 shooterMotorRight.setPower(shooterController.run());
                 shooterMotorLeft.setPower(shooterController.run());
                 flap.setPosition(flapPosition);
+                double distance = follower.getPose().distanceFrom(goalPos);
                 telemetry.addData("TargetVelocity", shooterTargetVelocity);
                 telemetry.addData("CurrentVelocity", shooterMotorLeft.getVelocity());
                 telemetry.addData("Power", shooterController.run());
+                telemetry.addData("distance", distance);
                 telemetry.update();
             }
             if (intakePower != 0){
@@ -115,52 +133,94 @@ public class SystemTest extends LinearOpMode {
                 leftPin.setPosition(leftPinPositon);
                 rightPin.setPosition(rightPinPosition);
             }
+            if (turretAutoAim){
+                double targetAngle;
+                double turretAngle;
+                boolean useVision;
+                if (turret.getCurrentPosition() != 0) {
+                    turretAngle = -360 / ((4096 * ((double) 70 / 20)) / turret.getCurrentPosition());
+                } else {
+                    turretAngle = 0;
+                }
+
+
+
+                LLResult result = limelight.getLatestResult();
+                if (result != null && result.isValid()) {
+                    double tx = result.getTx() - 4;
+                    targetAngle = turretAngle - tx;
+                    useVision = true;
+                } else {
+
+                    Pose robotPos = follower.getPose();
+                    double gobleAngle = Math.atan2(goalPos.getY() - robotPos.getY(), goalPos.getX() - robotPos.getX());
+                    double turretHeading = robotPos.getHeading() + Math.PI;
+                    if (turretHeading > Math.PI) turretHeading -= 2 * Math.PI;
+                    if (turretHeading < -Math.PI) turretHeading += 2 * Math.PI;
+                    targetAngle = Math.toDegrees(gobleAngle - turretHeading);
+                    if (targetAngle > 180) targetAngle -= 360;
+                    useVision = false;
+                }
+                boolean atAngle = turretAngle > targetAngle - 1 && turretAngle < targetAngle + 1;
+
+                if (Math.abs(targetAngle) < 125 && !atAngle) {
+                    turretController.setTargetPosition(targetAngle);
+                    turretController.updatePosition(turretAngle);
+                    double power = Math.clamp(turretController.run(), -0.625, 0.625);
+                    turret.setPower(power );
+                } else turret.setPower(0);
+            }
 
             if (leftColorSensor.blue()<100 &&leftColorSensor.red()<100 && leftColorSensor.green()<100){
-                telemetry.addData("Left Color", "none");
+
                 leftLight.setPosition(0.28);
 
 
             }
             else if(leftColorSensor.green() > leftColorSensor.blue() && leftColorSensor.green() > leftColorSensor.red()){
-                telemetry.addData("Left Color", "Green");
+
                 leftLight.setPosition(0.444);
             }
             else {
-                telemetry.addData("Left Color", "Purple");
+
                 leftLight.setPosition(0.722);
 
             }
             if (rightColorSensor.blue()<100 &&rightColorSensor.red()<100 && rightColorSensor.green()<100){
-                telemetry.addData("Right Color", "none");
+
                 rightLight.setPosition(0.28);
 
             }
             else if(rightColorSensor.green() > rightColorSensor.blue() && rightColorSensor.green() > rightColorSensor.red()){
-                telemetry.addData("Right Color", "Green");
+
                 rightLight.setPosition(0.444);
             }
             else {
-                telemetry.addData("Right Color", "Purple");
+
                 rightLight.setPosition(0.722);
             }
             if (centerColorSensor.blue()<100 &&centerColorSensor.red()<100 && centerColorSensor.green()<100){
-                telemetry.addData("CenterColor", "none");
+
                 centerLight.setPosition(0.28);
 
             }
             else if(centerColorSensor.green() > centerColorSensor.blue() && centerColorSensor.green() > centerColorSensor.red()){
-                telemetry.addData("Center Color", "Green");
+
                 centerLight.setPosition(0.444);
 
 
             }
             else {
-                telemetry.addData("Center Color", "Purple");
-                centerLight.setPosition(0.277);
+
+                centerLight.setPosition(0.722);
             }
+            limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
+
+
+            follower.update();
 
             telemetry.update();
+
 
 
         }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -34,14 +35,26 @@ public class DriverControl extends LinearOpMode {
         processor = new Processor();
 
         listener.addListener(Button.R_TRIGGER_DOWN, ()->{
-            processor.override(new Shoot());
+            if (Robot.sort){
+                processor.override(new Sort(21));
+            } else {
+                processor.override(new Shoot());
+            }
+
         });
         listener.addListener(Button.R_BUMPER_DOWN, ()->{
-            Robot.useAutoAim = true;
-            Robot.manul = false;
+            if (Robot.sort){
+                Robot.sort = false;
+            } else {
+                Robot.sort = true;
+            }
         });
         listener.addListener(Button.L_TRIGGER_DOWN, ()->{
-            processor.override(new IntakeBall());
+            if (Robot.sort){
+                processor.override(new IntakeBall(true));
+            } else {
+                processor.override(new IntakeBall(false));
+            }
 
         });
         listener.addListener(Button.L_BUMPER_DOWN, ()->{
@@ -52,20 +65,13 @@ public class DriverControl extends LinearOpMode {
             processor.override(new Reset());
 
         });
-        listener.addListener(Button.CIRCLE_DOWN, ()->{
-            processor.override(new Sort(21));
-        });
-        listener.addListener(Button.SQUARE_DOWN, ()->{
-            robot.pins.closeAllPin();
-        });
 
+        Robot.color = Color.RED;
+        Robot.sort = false;
 
-
-        robot.follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
+        robot.follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
         robot.follower.update();
         waitForStart();
-        Robot.useAutoAim = false;
-        Robot.manul = false;
 
         robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(true);
@@ -77,8 +83,8 @@ public class DriverControl extends LinearOpMode {
             robot.update();
             listener.update();
             processor.update(robot);
+            telemetry.addData("sort", Robot.sort);
             telemetry.addData("Colors", robot.colorSensors.getColors());
-            telemetry.addData("atVelocity", robot.shooter.atTargetVelocity());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());
             telemetry.update();

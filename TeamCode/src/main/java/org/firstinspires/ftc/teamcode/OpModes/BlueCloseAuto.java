@@ -13,9 +13,6 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
-import org.firstinspires.ftc.teamcode.common.command.ShootBlueAuto;
-import org.firstinspires.ftc.teamcode.common.command.ShootClose;
-import org.firstinspires.ftc.teamcode.common.command.ShootRedAuto;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
 @Autonomous
@@ -99,7 +96,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 2 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall());
+                processor.override(new IntakeBall(false));
                 robot.follower.followPath(grabPickup1);
                 elapsedTime.reset();
                 stage++;
@@ -116,7 +113,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 5 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall());
+                processor.override(new IntakeBall(false));
                 robot.follower.followPath(grabPickup2);
                 elapsedTime.reset();
                 stage++;
@@ -133,7 +130,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 8 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall());
+                processor.override(new IntakeBall(false));
 
                 robot.follower.followPath(grabPickup3);
                 elapsedTime.reset();

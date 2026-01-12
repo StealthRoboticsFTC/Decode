@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 public class OuttakeBall implements Command{
     private int stage = 0;
 
-    ElapsedTime elapsedTime = new ElapsedTime();
+
 
 
     @Override
@@ -15,21 +15,18 @@ public class OuttakeBall implements Command{
 
 
         if (stage == 0){
-            robot.shooter.shooterOff();
-            robot.transfer.turnOffTransfer();
+
+            robot.transfer.reverseTransfer();
             robot.intake.outtake();
-            elapsedTime.reset();
+            robot.pins.openAllPin();
 
             stage++;
-       } else if (stage == 1 && elapsedTime.milliseconds()>2000) {
-            robot.intake.turnOnIntake();
-            stage++;
-        }
+       }
     }
 
     @Override
     public boolean isDone() {
-        return stage==2;
+        return stage==1;
     }
 }
 

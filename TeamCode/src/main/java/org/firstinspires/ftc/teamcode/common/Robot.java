@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.enums.Color;
+import org.firstinspires.ftc.teamcode.common.enums.Position;
 import org.firstinspires.ftc.teamcode.common.subsystems.ColorSensors;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Lights;
@@ -18,11 +20,19 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class Robot {
 
     private long lastTime;
+    private final Pose redGoalPos = new Pose(144, 144, Math.toRadians(45));
+    private final Pose blueGoalPos = new Pose(0, 144, Math.toRadians(135));
+
+    public static Pose robotPos;
 
     public static Color color ;
 
+    public static Position position;
+
     public static Boolean useAutoAim;
     public static Boolean manul;
+
+    public static Boolean sort;
     public Follower follower;
     public Intake intake;
     public Shooter shooter;
@@ -54,10 +64,37 @@ public class Robot {
     public void update(){
         limelight.update();
         follower.update();
-        shooter.update(limelight.getShooterTargetVelocity(), limelight.getFlapPos());
+        robotPos = follower.getPose();
+        shooter.update(getShooterTargetVelocity(), getFlapPos(getShooterTargetVelocity()));
         turret.update(limelight.turretCurrentPos());
         lights.setLights(colorSensors.getColors());
 
 
+    }
+    private double getShooterTargetVelocity(){
+        double distance;
+        if (limelight.getDistance() != 0){
+            distance = limelight.getDistance();
+        } else {
+            if (color == Color.BLUE){
+                distance = robotPos.distanceFrom(blueGoalPos);
+            } else {
+                distance = robotPos.distanceFrom(redGoalPos);
+            }
+        }
+        double velocity =  (0.0201257 * Math.pow(distance, 2)) + (1.08993 * distance) + +880.67132;
+        if (velocity > 1600){
+            return 1500;
+        } else {
+            return velocity;
+        }
+
+    };
+    private double getFlapPos(Double velocity){
+        if (velocity < 1100){
+            return 0.7;
+        }else{
+            return 0.575;
+        }
     }
 }

@@ -28,6 +28,7 @@ public class Turret {
     public Turret(HardwareMap hardwareMap){
         turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         encoderController = new PIDFController(new PIDFCoefficients(-0.000425, 0, -0.000015,-0.0000325));
         limeLightController = new PIDFController(new PIDFCoefficients(0.025, 0, 0.00035, 0));
@@ -51,23 +52,8 @@ public class Turret {
 
 
     public void update(double CurrentLimelightPos){
-        if (Robot.useAutoAim){
-            if (Robot.color == Color.RED){
-                limeLightController.setTargetPosition(-2.5);
-                limeLightController.updatePosition(CurrentLimelightPos);
-                turret.setPower(limeLightController.run());
-            } else if (Robot.color == Color.BLUE) {
-                limeLightController.setTargetPosition(2.5);
-                limeLightController.updatePosition(CurrentLimelightPos);
-                turret.setPower(limeLightController.run());
-            }
-        } else if (!Robot.manul){
-            turret.setPower(0);
-        } else {
-            encoderController.updatePosition(turret.getCurrentPosition());
-            turret.setPower(encoderController.run());
-        }
 
+        turret.setPower(0);
 
     }
 }

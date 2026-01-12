@@ -33,7 +33,7 @@ public class TurretPIDTest extends LinearOpMode {
         while (!isStopRequested()){
             double currentAngle;
             if (turret.getCurrentPosition() != 0){
-                currentAngle = -360/((4096*((double) 70 /14))/ turret.getCurrentPosition());
+                currentAngle = -360/((4096*((double) 70 /20))/ turret.getCurrentPosition());
             } else {
                 currentAngle = 0;
             }
