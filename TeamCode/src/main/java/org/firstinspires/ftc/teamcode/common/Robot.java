@@ -91,10 +91,10 @@ public class Robot {
 
     };
     private double getFlapPos(Double velocity){
-        if (velocity < 1100){
-            return 0.7;
+        if (velocity < 1300){
+            return 0.55;
         }else{
-            return 0.575;
+            return 0.45;
         }
     }
 }

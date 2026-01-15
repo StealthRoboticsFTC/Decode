@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.panels.Panels;
+import com.bylazar.utils.LoopTimer;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
@@ -19,6 +21,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.Timer;
 
 @TeleOp
 @Configurable
@@ -44,6 +48,8 @@ public class SystemTest extends LinearOpMode {
     public static double leftPinPositon = 0;
     public static double centerPinPosition = 1;
     public static double rightPinPosition = 0.55;
+
+    LoopTimer timer = new LoopTimer();
 
 
 
@@ -95,6 +101,7 @@ public class SystemTest extends LinearOpMode {
         limelight.pipelineSwitch(0);
         limelight.start();
         while (!isStopRequested()){
+            timer.start();
             if (turretTargetPosition != 0){
                 turretController.setTargetPosition(turretTargetPosition);
                 turretController.updatePosition(turret.getCurrentPosition());
@@ -147,7 +154,7 @@ public class SystemTest extends LinearOpMode {
 
                 LLResult result = limelight.getLatestResult();
                 if (result != null && result.isValid()) {
-                    double tx = result.getTx() - 4;
+                    double tx = result.getTx() ;
                     targetAngle = turretAngle - tx;
                     useVision = true;
                 } else {
@@ -166,8 +173,7 @@ public class SystemTest extends LinearOpMode {
                 if (Math.abs(targetAngle) < 125 && !atAngle) {
                     turretController.setTargetPosition(targetAngle);
                     turretController.updatePosition(turretAngle);
-                    double power = Math.clamp(turretController.run(), -0.625, 0.625);
-                    turret.setPower(power );
+                    turret.setPower(turretController.run() );
                 } else turret.setPower(0);
             }
 
@@ -218,8 +224,11 @@ public class SystemTest extends LinearOpMode {
 
 
             follower.update();
+            timer.end();
+            telemetry.addData("loopTime", timer.getMs());
 
             telemetry.update();
+
 
 
 

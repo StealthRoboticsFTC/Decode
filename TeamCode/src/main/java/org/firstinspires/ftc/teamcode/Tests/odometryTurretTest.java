@@ -4,6 +4,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.utils.LoopTimer;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
@@ -16,16 +17,27 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
+import org.firstinspires.ftc.teamcode.common.CustomPIDController;
+import org.firstinspires.ftc.teamcode.common.TimestampedAngleBacklog;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp
 @Configurable
 public class odometryTurretTest extends LinearOpMode {
-    private final Pose goalPos = new Pose(144, 144, Math.toRadians(45));
+    private final Pose goalPos = new Pose(135, 129, Math.toRadians(45));
     public static double newX = 0;
     public static double newY = 0;
 
     public static double newHeading;
+    public static double kp = 4;
+    public static double ki = 0.007;
+    public static double kd = 0.0015;
+    public static double kf = 0.001;
+    public static double ks = 0.05;
+    public static long ms_comp = 40;
+
+    private TimestampedAngleBacklog backlog = new TimestampedAngleBacklog();
     TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    LoopTimer timer = new LoopTimer();
 
 
     @Override
@@ -39,7 +51,7 @@ public class odometryTurretTest extends LinearOpMode {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Limelight3A limelight3A = hardwareMap.get(Limelight3A.class, "limeLight");
-        PIDFController controller = new PIDFController(new PIDFCoefficients(0.025 , 0, 0.002,0.04 ));
+        CustomPIDController controller = new CustomPIDController();
 
         waitForStart();
         limelight3A.pipelineSwitch(0);
@@ -47,22 +59,29 @@ public class odometryTurretTest extends LinearOpMode {
 
 
         while (!isStopRequested()) {
+            timer.start();
+            sleep(50);
+            controller.setkD(kd);
+
+            controller.setkP(kp);
+            controller.setkI(ki);
+            controller.setkF(kf);
+            controller.setkS(ks);
 
             double targetAngle;
-            double turretAngle;
             boolean useVision;
-            if (turret.getCurrentPosition() != 0) {
-                turretAngle = -360 / ((4096 * ((double) 70 / 20)) / turret.getCurrentPosition());
-            } else {
-                turretAngle = 0;
-            }
+            double k = -360. / (4096. * (70. / 20.));
+            double turretAngle = k * turret.getCurrentPosition();
+            double turretVelocity = k * turret.getVelocity();
 
-
+            backlog.addAngle(turretAngle);
 
             LLResult result = limelight3A.getLatestResult();
             if (result != null && result.isValid()) {
                 double tx = result.getTx();
-                targetAngle = turretAngle - tx;
+                double prevAngle = backlog.getAngle(result.getControlHubTimeStampNanos() - ms_comp * 1000000);
+                panelsTelemetry.addData("prevAngle", prevAngle);
+                targetAngle = prevAngle - tx;
                 useVision = true;
             } else {
 
@@ -75,13 +94,22 @@ public class odometryTurretTest extends LinearOpMode {
                 if (targetAngle > 180) targetAngle -= 360;
                 useVision = false;
             }
-            boolean atAngle = turretAngle > targetAngle - 1 && turretAngle < targetAngle + 1;
+            boolean atAngle = Math.abs(turretAngle - targetAngle) <= 1;
 
             if (Math.abs(targetAngle) < 125 && !atAngle) {
-                controller.setTargetPosition(targetAngle);
-                controller.updatePosition(turretAngle);
-                turret.setPower(controller.run());
-            } else turret.setPower(0);
+                controller.setTarget(targetAngle);
+                double power = Math.clamp(controller.update(turretAngle, turretVelocity), -0.65, 0.65);
+                turret.setPower(power);
+                panelsTelemetry.addData("power", power);
+            } else {
+                turret.setPower(0);
+                controller.skip();
+            }
+            limelight3A.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
+
+
+            follower.update();
+            timer.end();
 
             panelsTelemetry.addData("atAngle", atAngle);
             panelsTelemetry.addData("targetAngle", targetAngle);
@@ -89,11 +117,10 @@ public class odometryTurretTest extends LinearOpMode {
             panelsTelemetry.addData("turretAngle", turretAngle);
             panelsTelemetry.addData("turretPosition", turret.getCurrentPosition());
             panelsTelemetry.addData("useVision", useVision);
+
+            panelsTelemetry.addData("looptime", timer.getMs());
             panelsTelemetry.update();
-            limelight3A.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
 
-
-            follower.update();
         }
     }
 }

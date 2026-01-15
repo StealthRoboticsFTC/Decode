@@ -84,9 +84,11 @@ public class DriverControl extends LinearOpMode {
             listener.update();
             processor.update(robot);
             telemetry.addData("sort", Robot.sort);
+            telemetry.addData("distance", robot.limelight.getDistance());
             telemetry.addData("Colors", robot.colorSensors.getColors());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());
+
             telemetry.update();
         }
     }
