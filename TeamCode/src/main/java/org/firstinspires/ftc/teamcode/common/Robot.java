@@ -25,17 +25,21 @@ public class Robot {
     private Pose goalPos;
     private final Pose redGoalPos = new Pose(133, 131, Math.toRadians(45));
     private final Pose blueGoalPos = new Pose(11, 131, Math.toRadians(135));
+    private double turretTargetAngle = 0;
 
     public static Pose robotPos;
 
     public static Color color ;
 
+    public static int motif;
+
     public static Position position;
 
     public static Boolean useAutoAim;
-    public static Boolean manul;
+
 
     public static Boolean sort;
+
     public Follower follower;
     public Intake intake;
     public Shooter shooter;
@@ -97,10 +101,14 @@ public class Robot {
             }
         }
         double velocity =  (0.027305* Math.pow(distance, 2)) - (0.0836134* distance) + 925.12785;
-        if (velocity > 1600){
-            return 1500;
+        if (useAutoAim){
+            if (velocity > 1600){
+                return 1500;
+            } else {
+                return velocity;
+            }
         } else {
-            return velocity;
+            return 1200;
         }
 
     };
@@ -127,7 +135,14 @@ public class Robot {
             targetAngle = Math.toDegrees(gobleAngle - turretHeading);
             if (targetAngle > 180) targetAngle -= 360;
         }
-        return targetAngle;
+        if (useAutoAim){
+            return targetAngle;
+        } else {
+            return turretTargetAngle;
+        }
+    }
+    public void setTurretAngle(double turretTargetAngle){
+        this.turretTargetAngle = turretTargetAngle;
     }
     private void setGoalPose(){
         if (Robot.color == Color.RED){

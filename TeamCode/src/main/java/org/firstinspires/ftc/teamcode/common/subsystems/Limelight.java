@@ -27,11 +27,14 @@ public class Limelight {
     public void setPipLine(Color color){
         if (color == Color.RED){
             limelight.pipelineSwitch(0);
-        } else  {
+        } else if (color == Color.BLUE) {
             limelight.pipelineSwitch(1);
+        } else {
+            limelight.pipelineSwitch(2);
+        }
+
 
         }
-    }
 
     public double getDistance(){
         if (result != null && result.isValid() ){

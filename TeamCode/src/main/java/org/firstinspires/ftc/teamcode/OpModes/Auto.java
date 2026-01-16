@@ -67,6 +67,7 @@ public class Auto extends LinearOpMode {
             grabPickup1 = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farScore1Pose,farPickup1Pose))
                     .setLinearHeadingInterpolation(farScore1Pose.getHeading(), farPickup1Pose.getHeading())
+
                     .build();
             scorePickup1= robot.follower.pathBuilder()
                     .addPath(new BezierLine(farPickup1Pose, farScore2Pose))
