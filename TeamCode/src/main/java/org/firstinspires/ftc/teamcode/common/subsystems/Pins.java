@@ -40,8 +40,8 @@ public class Pins {
     }
 
     public void setPinsToIntake(){
-        leftPin.setPosition(leftPinClose);
         rightPin.setPosition(rightPinClose);
+        centerPin.setPosition(centerPinClose);
     }
 
     public void setPinOpen(int index){

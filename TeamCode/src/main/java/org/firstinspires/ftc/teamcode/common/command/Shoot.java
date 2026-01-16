@@ -13,11 +13,14 @@ public class Shoot implements Command{
 
             robot.intake.turnOnIntake();
             robot.transfer.turnOnTransfer();
-            robot.pins.setPinOpen(0);
             robot.pins.setPinOpen(1);
             elapsedTime.reset();
             stage++;
-        } else if (stage == 1 && elapsedTime.milliseconds()>500) {
+        } else if (stage == 1 && elapsedTime.milliseconds()>250) {
+            robot.pins.setPinOpen(0);
+            elapsedTime.reset();
+            stage++;
+        } else if (stage == 2 && elapsedTime.milliseconds() > 250) {
             robot.pins.openAllPin();
             stage++;
         }
@@ -26,7 +29,7 @@ public class Shoot implements Command{
 
     @Override
     public boolean isDone() {
-        return stage==2;
+        return stage==3;
     }
 }
 

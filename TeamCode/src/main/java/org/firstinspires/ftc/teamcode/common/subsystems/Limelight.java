@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
 import java.util.List;
@@ -44,7 +45,6 @@ public class Limelight {
     }
 
     public int getMotif(){
-        limelight.pipelineSwitch(2);
         int id = 0;
         if (result != null && result.isValid()){
             List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
@@ -58,17 +58,19 @@ public class Limelight {
     }
 
 
-    public double turretCurrentPos(){
-        if (result != null && result.isValid() ){
-            return result.getTx();
-        }
-        else {
-            return 0;
-        }
+    public LLResult getResult(){
+
+        return result;
 
     }
+    public boolean limeLightResult(){
+        return result != null && result.isValid();
+        }
+
+
 
     public void update(){
+        limelight.updateRobotOrientation(Math.toDegrees(Robot.robotPos.getHeading()));
         result = limelight.getLatestResult();
     }
 }

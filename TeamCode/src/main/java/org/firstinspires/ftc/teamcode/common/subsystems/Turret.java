@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.common.CustomPIDController;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
@@ -20,9 +21,12 @@ public class Turret {
 
     private final static int reset = 0;
 
+    private final static double k = -360. / (4096. * (70. / 20.));
 
-    private final PIDFController encoderController;
-    private final PIDFController limeLightController;
+
+    private final CustomPIDController controller;
+    double turretAngle;
+
 
 
     public Turret(HardwareMap hardwareMap){
@@ -30,30 +34,36 @@ public class Turret {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        encoderController = new PIDFController(new PIDFCoefficients(-0.000425, 0, -0.000015,-0.0000325));
-        limeLightController = new PIDFController(new PIDFCoefficients(0.025, 0, 0.00035, 0));
-    }
-    public void moveTurretRedAuto(){
-        encoderController.setTargetPosition(redClose);
-    }
-    public void moveTurretBlueAuto(){
-        encoderController.setTargetPosition(blueClose);
-    }
+        controller = new CustomPIDController();
+        controller.setkD(0.0015);
+        controller.setkP(4);
+        controller.setkI(0.007);
+        controller.setkF(0.001);
+        controller.setkS(0.05);
 
-    public void  moveTurretRedFar(){
-        encoderController.setTargetPosition(redFar);
-    }
-    public void  moveTurretBlueFar(){
-        encoderController.setTargetPosition(blueFar);
-    }
-    public void turretReset(){
-        encoderController.setTargetPosition(reset);
     }
 
 
-    public void update(double CurrentLimelightPos){
 
-        turret.setPower(0);
+
+    public void update(double targetAngle){
+
+        boolean atAngle = Math.abs(turretAngle - targetAngle) <= 1;
+
+        if (Math.abs(targetAngle) < 125 && !atAngle) {
+            controller.setTarget(targetAngle);
+            double power = Math.clamp(controller.update(turretAngle, k * turret.getVelocity()), -0.65, 0.65);
+            turret.setPower(power);
+        } else {
+            turret.setPower(0);
+            controller.skip();
+        }
 
     }
+
+    public double getTurretAngle(){
+        turretAngle = k * turret.getCurrentPosition();
+        return turretAngle;
+    }
+
 }

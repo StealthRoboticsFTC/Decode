@@ -5,6 +5,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.common.command.Sort;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 import org.firstinspires.ftc.teamcode.common.enums.Position;
 import org.firstinspires.ftc.teamcode.common.subsystems.ColorSensors;
@@ -20,8 +21,10 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class Robot {
 
     private long lastTime;
-    private final Pose redGoalPos = new Pose(144, 144, Math.toRadians(45));
-    private final Pose blueGoalPos = new Pose(0, 144, Math.toRadians(135));
+
+    private Pose goalPos;
+    private final Pose redGoalPos = new Pose(133, 131, Math.toRadians(45));
+    private final Pose blueGoalPos = new Pose(11, 131, Math.toRadians(135));
 
     public static Pose robotPos;
 
@@ -42,6 +45,7 @@ public class Robot {
 
     public Pins pins;
     public ColorSensors colorSensors;
+    private final TimestampedAngleBacklog backlog = new TimestampedAngleBacklog();
     public Lights lights;
     public Turret turret;
 
@@ -62,12 +66,22 @@ public class Robot {
     }
 
     public void update(){
+        setGoalPose();
+        robotPos = follower.getPose();
+        backlog.addAngle(turret.getTurretAngle());
         limelight.update();
         follower.update();
-        robotPos = follower.getPose();
         shooter.update(getShooterTargetVelocity(), getFlapPos(getShooterTargetVelocity()));
-        turret.update(limelight.turretCurrentPos());
-        lights.setLights(colorSensors.getColors());
+        turret.update(getTurretTarget());
+        if (sort){
+            lights.setLights(colorSensors.getColors());
+        } else {
+            lights.setToDefault();
+        }
+
+
+
+
 
 
     }
@@ -82,7 +96,7 @@ public class Robot {
                 distance = robotPos.distanceFrom(redGoalPos);
             }
         }
-        double velocity =  (0.0201257 * Math.pow(distance, 2)) + (1.08993 * distance) + +880.67132;
+        double velocity =  (0.027305* Math.pow(distance, 2)) - (0.0836134* distance) + 925.12785;
         if (velocity > 1600){
             return 1500;
         } else {
@@ -92,9 +106,34 @@ public class Robot {
     };
     private double getFlapPos(Double velocity){
         if (velocity < 1300){
-            return 0.55;
+            return 0.425;
         }else{
-            return 0.45;
+            return 0.425;
+        }
+    }
+
+    private double getTurretTarget(){
+        double targetAngle;
+
+        if (limelight.limeLightResult()){
+            double tx = limelight.getResult().getTx();
+            double prevAngle = backlog.getAngle(limelight.getResult().getControlHubTimeStampNanos() );
+            targetAngle = prevAngle - tx;
+        } else {
+            double gobleAngle = Math.atan2(goalPos.getY() - robotPos.getY(), goalPos.getX() - robotPos.getX());
+            double turretHeading = robotPos.getHeading() + Math.PI;
+            if (turretHeading > Math.PI) turretHeading -= 2 * Math.PI;
+            if (turretHeading < -Math.PI) turretHeading += 2 * Math.PI;
+            targetAngle = Math.toDegrees(gobleAngle - turretHeading);
+            if (targetAngle > 180) targetAngle -= 360;
+        }
+        return targetAngle;
+    }
+    private void setGoalPose(){
+        if (Robot.color == Color.RED){
+            goalPos = redGoalPos;
+        } else {
+            goalPos = blueGoalPos;
         }
     }
 }

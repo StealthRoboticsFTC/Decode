@@ -68,8 +68,11 @@ public class DriverControl extends LinearOpMode {
 
         Robot.color = Color.RED;
         Robot.sort = false;
-
-        robot.follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
+        if (Robot.robotPos != null){
+            robot.follower.setStartingPose(Robot.robotPos);
+        } else {
+            robot.follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
+        }
         robot.follower.update();
         waitForStart();
 
@@ -83,9 +86,11 @@ public class DriverControl extends LinearOpMode {
             robot.update();
             listener.update();
             processor.update(robot);
+            telemetry.addData("id", robot.limelight.getMotif());
+            telemetry.addData("robotPos", Robot.robotPos);
+            telemetry.addData("turretAngle", robot.turret.getTurretAngle());
             telemetry.addData("sort", Robot.sort);
             telemetry.addData("distance", robot.limelight.getDistance());
-            telemetry.addData("Colors", robot.colorSensors.getColors());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());
 

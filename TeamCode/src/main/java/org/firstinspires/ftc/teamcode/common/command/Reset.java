@@ -10,7 +10,7 @@ public class Reset implements Command{
             robot.shooter.shooterOff();
             robot.transfer.turnOffTransfer();
             robot.intake.turnOffIntake();
-            robot.turret.turretReset();
+           
 
             stage++;
         }

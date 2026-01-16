@@ -27,5 +27,12 @@ public class Lights {
             }
         }
 
+    }
+
+    public void setToDefault(){
+        for (int i = 0; i < 3; i++) {
+            lights[i].setPosition(0.28);
         }
+    }
+
 }
