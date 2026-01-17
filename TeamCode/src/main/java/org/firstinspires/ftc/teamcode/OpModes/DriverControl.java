@@ -66,8 +66,9 @@ public class DriverControl extends LinearOpMode {
 
         });
 
-        Robot.color = Color.RED;
+        Robot.useAutoAim = true;
         Robot.sort = false;
+        robot.limelight.setPipLine(Robot.color);
         if (Robot.robotPos != null){
             robot.follower.setStartingPose(Robot.robotPos);
         } else {

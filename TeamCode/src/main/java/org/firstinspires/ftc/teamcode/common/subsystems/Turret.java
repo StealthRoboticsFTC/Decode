@@ -50,7 +50,7 @@ public class Turret {
 
         boolean atAngle = Math.abs(turretAngle - targetAngle) <= 1;
 
-        if (Math.abs(targetAngle) < 125 && !atAngle) {
+        if (Math.abs(targetAngle) < 135 && !atAngle) {
             controller.setTarget(targetAngle);
             double power = Math.clamp(controller.update(turretAngle, k * turret.getVelocity()), -0.65, 0.65);
             turret.setPower(power);

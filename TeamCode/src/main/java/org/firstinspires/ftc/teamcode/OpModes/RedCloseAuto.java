@@ -80,7 +80,7 @@ public class RedCloseAuto extends LinearOpMode {
         waitForStart();
         Robot.useAutoAim = true;
         Robot.color = Color.RED;
-        Robot.manul = false;
+
         robot.limelight.setPipLine(Robot.color);
         while (!isStopRequested()){
             if (stage == 0){

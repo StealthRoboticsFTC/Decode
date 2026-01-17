@@ -39,7 +39,7 @@ public class Limelight {
     public double getDistance(){
         if (result != null && result.isValid() ){
             double x = result.getTy();
-            return 0.00142702 * Math.pow(x, 4)+0.00394377*Math.pow(x, 3) - 0.0162766*Math.pow(x, 2) -2.70257 *x + 63.6295;
+            return -0.0262708* Math.pow(x, 3) - 0.115196 *Math.pow(x, 2) - 1.70694 * x + 68.75966;
 
         } else {
             return 0;

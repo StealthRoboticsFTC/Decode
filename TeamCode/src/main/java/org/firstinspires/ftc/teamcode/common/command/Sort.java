@@ -52,10 +52,10 @@ public class Sort implements Command{
             }
         } else if (stage== 3 && time.milliseconds()>1000) {
             int index = currentColors.indexOf(motif[2]);
-            robot.pins.setPinOpen(index);
             if (index < 0){
                 stage = 4;
             }else {
+                Robot.useAutoAim = true;
                 robot.pins.setPinOpen(index);
                 currentColors.set(index, BallColors.None);
                 time.reset();

@@ -75,7 +75,7 @@ public class Robot {
         backlog.addAngle(turret.getTurretAngle());
         limelight.update();
         follower.update();
-        shooter.update(getShooterTargetVelocity(), getFlapPos(getShooterTargetVelocity()));
+        shooter.update(getShooterTargetVelocity(getDistance()), getFlapPos(getDistance()));
         turret.update(getTurretTarget());
         if (sort){
             lights.setLights(colorSensors.getColors());
@@ -89,7 +89,33 @@ public class Robot {
 
 
     }
-    private double getShooterTargetVelocity(){
+    private double getShooterTargetVelocity(double distance){
+
+        double velocity =  5.89091 * distance + 606.54545;
+        if (useAutoAim){
+            if (velocity > 1600){
+                return 1500;
+            } else {
+                return velocity;
+            }
+        } else {
+            return 1000;
+        }
+
+    };
+    private double getFlapPos(Double distance){
+       if (distance >= 160){
+           return 0.525;
+       } else if (distance <= 80) {
+           return 0.55;
+       } else if (distance > 80 && distance<110) {
+           return 0.525;
+       } else {
+           return 0.5;
+       }
+    }
+
+    private double getDistance(){
         double distance;
         if (limelight.getDistance() != 0){
             distance = limelight.getDistance();
@@ -100,24 +126,7 @@ public class Robot {
                 distance = robotPos.distanceFrom(redGoalPos);
             }
         }
-        double velocity =  (0.027305* Math.pow(distance, 2)) - (0.0836134* distance) + 925.12785;
-        if (useAutoAim){
-            if (velocity > 1600){
-                return 1500;
-            } else {
-                return velocity;
-            }
-        } else {
-            return 1200;
-        }
-
-    };
-    private double getFlapPos(Double velocity){
-        if (velocity < 1300){
-            return 0.425;
-        }else{
-            return 0.425;
-        }
+        return distance;
     }
 
     private double getTurretTarget(){

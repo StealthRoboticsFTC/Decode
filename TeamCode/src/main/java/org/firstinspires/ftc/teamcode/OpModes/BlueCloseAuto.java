@@ -24,7 +24,7 @@ public class BlueCloseAuto extends LinearOpMode {
     private final double heading = Math.toRadians(0);
 
     private final Pose startPose = new Pose(117,132,Math.toRadians(315)).mirror();
-    private final Pose scorePose = new Pose(90,90, Math.toRadians(315)).mirror();
+    private final Pose scorePose = new Pose(90,90, Math.toRadians(300)).mirror();
     private final Pose pickup1Pose = new Pose(125,83, heading).mirror();
     private final Pose pickup2Pose = new Pose(132,60, heading).mirror();
     private final Pose pickup3Pose = new Pose(125,35, heading).mirror();
@@ -80,12 +80,14 @@ public class BlueCloseAuto extends LinearOpMode {
 
         waitForStart();
         Robot.useAutoAim = true;
+        Robot.sort = false;
+
         Robot.color = Color.BLUE;
-        Robot.manul = false;
+
         robot.limelight.setPipLine(Robot.color);
         while (!isStopRequested()){
             if (stage == 0){
-                Robot.useAutoAim = true;
+
                 robot.follower.setMaxPower(1);
                 robot.follower.followPath(scorePreload);
                 elapsedTime.reset();
@@ -96,13 +98,13 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 2 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall(false));
+                processor.override(new IntakeBall(true));
                 robot.follower.followPath(grabPickup1);
                 elapsedTime.reset();
                 stage++;
 
             } else if (stage == 3 && !robot.follower.isBusy()) {
-                Robot.useAutoAim = true;
+
                 robot.follower.followPath(scorePickup1);
                 elapsedTime.reset();
                 stage++;
@@ -113,13 +115,13 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 5 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall(false));
+                processor.override(new IntakeBall(true));
                 robot.follower.followPath(grabPickup2);
                 elapsedTime.reset();
                 stage++;
 
             } else if (stage == 6 && !robot.follower.isBusy()) {
-                Robot.useAutoAim = true;
+
                 robot.follower.followPath(scorePickup2);
                 elapsedTime.reset();
                 stage++;
@@ -130,14 +132,14 @@ public class BlueCloseAuto extends LinearOpMode {
                 stage++;
 
             } else if (stage == 8 && elapsedTime.milliseconds() > 3000) {
-                processor.override(new IntakeBall(false));
+                processor.override(new IntakeBall(true));
 
                 robot.follower.followPath(grabPickup3);
                 elapsedTime.reset();
                 stage++;
 
             } else if (stage == 9 && !robot.follower.isBusy()) {
-                Robot.useAutoAim = true;
+
                 robot.follower.followPath(scorePickup3);
                 elapsedTime.reset();
                 stage++;
