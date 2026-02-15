@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
 import org.firstinspires.ftc.teamcode.common.command.IntakeSort;
+import org.firstinspires.ftc.teamcode.common.command.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
@@ -73,10 +74,34 @@ public class DriverControl extends LinearOpMode {
             processor.override(new OuttakeBall());
         });
 
-        listener.addListener(Button.CROSS_DOWN, ()->{
-            robot.turret.noAutoAim();
+        listener.addListener(Button.L_STICK_DOWN, ()->{
+            if (robot.turret.isUseAutoAim()){
+                robot.turret.noAutoAim();
+            } else  {
+                robot.turret.useAutoAim();
+            }
 
         });
+        listener.addListener(Button.R_STICK_DOWN, ()->{
+            if (robot.shooter.isUseAutoAim()){
+                robot.shooter.noAutoAim();
+            } else  {
+                robot.shooter.useAutoAim();
+            }
+
+        });
+        listener.addListener(Button.CROSS_DOWN, ()->{
+            processor.override(new Reset());
+        });
+        listener.addListener(Button.CIRCLE_DOWN, ()->{
+            processor.override(new IntakeTransfer());
+        });
+
+        listener.addListener(Button.TRIANGLE_DOWN, ()->{
+            robot.limelight.getMotif();
+        });
+
+
 
         Robot.color = Color.RED;
 
@@ -100,8 +125,11 @@ public class DriverControl extends LinearOpMode {
                 vibrate = false;
             }
 
-            if (processor.getLastExecuted() instanceof Shoot && !processor.isBusy() && autoShoot){
+            if (processor.getLastExecuted() instanceof Shoot && !processor.isBusy()){
                 processor.override(new IntakeBall(true));
+            }
+            if (processor.getLastExecuted() instanceof Sort && !processor.isBusy()){
+                processor.override(new IntakeSort());
             }
             /*if (!processor.isBusy() && Robot.threeBalls && (robot.inBackTriangle() || robot.inFrontTriangle())){
                 gamepad1.rumble(500);

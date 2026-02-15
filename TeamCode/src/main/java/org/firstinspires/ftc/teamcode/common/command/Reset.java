@@ -7,12 +7,12 @@ public class Reset implements Command{
     @Override
     public void update(Robot robot) {
         if (stage == 0){
-            robot.shooter.shooterOff();
-            robot.transfer.turnOffTransfer();
+            robot.shooter.setTargetVelocity(0);
+            robot.pins.openAllPin();
+            robot.turret.setTargetAngle(0);
             robot.intake.turnOffIntake();
-           
-
-            stage++;
+            robot.lifter.liftDown();
+            robot.transfer.turnOnTransfer();
         }
     }
 

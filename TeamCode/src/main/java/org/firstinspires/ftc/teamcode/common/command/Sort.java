@@ -30,42 +30,45 @@ public class Sort implements Command{
             robot.transfer.turnOnTransfer();
             robot.lifter.liftDown();
             currentColors = robot.colorSensors.getColors();
-            if (!currentColors.contains(BallColors.None) || time.milliseconds()>1000){
+            if (!currentColors.contains(BallColors.None) || time.milliseconds()>750){
                 stage++;
             } 
         } else if (stage == 1){
             int index = currentColors.indexOf(motif[0]);
             if (index < 0){
-                stage = 4;
+                robot.pins.setPinOpen(0);
+                currentColors.set(0, BallColors.None);
             }else {
                 robot.pins.setPinOpen(index);
                 currentColors.set(index, BallColors.None);
-                time.reset();
-                stage++;
             }
-        } else if (stage== 2 && time.milliseconds()>1000) {
+            time.reset();
+            stage++;
+        } else if (stage== 2 && time.milliseconds()>750) {
             int index = currentColors.indexOf(motif[1]);
             if (index < 0){
-                stage = 4;
+                robot.pins.setPinOpen(1);
+                currentColors.set(1, BallColors.None);
             }else {
                 robot.pins.setPinOpen(index);
                 currentColors.set(index, BallColors.None);
-                time.reset();
-                stage++;
+
             }
-        } else if (stage== 3 && time.milliseconds()>1000) {
+            time.reset();
+            stage++;
+        } else if (stage== 3 && time.milliseconds()>750) {
             int index = currentColors.indexOf(motif[2]);
             if (index < 0){
-                stage = 4;
+                robot.pins.setPinOpen(2);
+                currentColors.set(2, BallColors.None);
             }else {
-
                 robot.pins.setPinOpen(index);
                 currentColors.set(index, BallColors.None);
-                time.reset();
-                stage++;
             }
-        } else if (stage == 4) {
-            robot.pins.openAllPin();
+            time.reset();
+            stage++;
+        } else if (stage == 4 && time.milliseconds()>750) {
+            robot.lifter.liftUp();
             stage++;
         }
     }

@@ -35,17 +35,20 @@ public class Auto extends LinearOpMode {
     private final Pose farScore2Pose = new Pose(56,25, heading);
 
 
-    private final Pose farPickup1Pose = new Pose(16,8, heading);
-    private final Pose farPickup2Pose = new Pose(16,36, heading);
+    private final Pose farPickup1Pose = new Pose(15,8, heading);
+    private final Pose farPickup2Pose = new Pose(15,36, heading);
     private final Pose farPickup2Control = new Pose(45,35, heading);
-    private final Pose farPickup3Pose = new Pose(16,66, heading);
+    private final Pose farPickup3Pose = new Pose(20,66, heading);
     private final Pose farPickup3Control = new Pose(60,60, heading);
-    private final Pose farPickup4Pose = new Pose(16,25, heading);
+    private final Pose farPickup4Pose = new Pose(15, 48, heading);
+    private final Pose farPickup5Pose = new Pose(15,28, heading);
+
+
 
     private final Pose farParkPose = new Pose(30,8, heading);
 
 
-    private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3, grabPickup4, scorePickup4, grabPickup5, scorePickup5, park;
+    private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3, grabPickup4, scorePickup4, grabPickup5, scorePickup5, grabPickup6, scorePickup6, park;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
@@ -106,27 +109,40 @@ public class Auto extends LinearOpMode {
                     .setLinearHeadingInterpolation(farPickup3Pose.getHeading(),farScore2Pose.getHeading())
                     .setBrakingStrength(2.5)
                     .build();
+
             grabPickup4  = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farScore2Pose, farPickup4Pose))
                     .setLinearHeadingInterpolation(farScore2Pose.getHeading(), farPickup4Pose.getHeading())
                     .setNoDeceleration()
                     .build();
             scorePickup4 = robot.follower.pathBuilder()
-                    .addPath(new BezierLine(farPickup4Pose, farScore1Pose))
-                    .setLinearHeadingInterpolation(farPickup4Pose.getHeading(), farScore1Pose.getHeading())
+                    .addPath(new BezierLine(farPickup4Pose, farScore2Pose))
+                    .setLinearHeadingInterpolation(farPickup4Pose.getHeading(), farScore2Pose.getHeading())
                     .setBrakingStrength(2.5)
                     .build();
-            grabPickup5 = robot.follower.pathBuilder()
+
+            grabPickup5  = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(farScore2Pose, farPickup5Pose))
+                    .setLinearHeadingInterpolation(farScore2Pose.getHeading(), farPickup5Pose.getHeading())
+                    .setNoDeceleration()
+                    .build();
+            scorePickup5 = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(farPickup5Pose, farScore1Pose))
+                    .setLinearHeadingInterpolation(farPickup5Pose.getHeading(), farScore1Pose.getHeading())
+                    .setBrakingStrength(2.5)
+                    .build();
+            grabPickup6 = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farScore1Pose, farPickup1Pose))
                     .setLinearHeadingInterpolation(farScore1Pose.getHeading(), farPickup1Pose.getHeading())
                     .setNoDeceleration()
                     .build();
 
-            scorePickup5 = robot.follower.pathBuilder()
+            scorePickup6 = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farPickup1Pose, farScore1Pose))
                     .setLinearHeadingInterpolation(farPickup1Pose.getHeading(), farScore1Pose.getHeading())
                     .setBrakingStrength(2.5)
                     .build();
+
             park = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farScore1Pose,farParkPose))
                     .setLinearHeadingInterpolation(farScore1Pose.getHeading(), farParkPose.getHeading())
@@ -174,17 +190,28 @@ public class Auto extends LinearOpMode {
                     .setNoDeceleration()
                     .build();
             scorePickup4 = robot.follower.pathBuilder()
-                    .addPath(new BezierLine(farPickup4Pose.mirror(), farScore1Pose.mirror()))
-                    .setLinearHeadingInterpolation(farPickup4Pose.mirror().getHeading(), farScore1Pose.mirror().getHeading())
+                    .addPath(new BezierLine(farPickup4Pose.mirror(), farScore2Pose.mirror()))
+                    .setLinearHeadingInterpolation(farPickup4Pose.mirror().getHeading(), farScore2Pose.mirror().getHeading())
                     .setBrakingStrength(2.5)
                     .build();
             grabPickup5 = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(farScore2Pose.mirror(), farPickup5Pose.mirror()))
+                    .setLinearHeadingInterpolation(farScore2Pose.mirror().getHeading(), farPickup5Pose.mirror().getHeading())
+                    .setNoDeceleration()
+                    .build();
+
+            scorePickup5 = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(farPickup5Pose.mirror(), farScore1Pose.mirror()))
+                    .setLinearHeadingInterpolation(farPickup5Pose.mirror().getHeading(), farScore1Pose.mirror().getHeading())
+                    .setBrakingStrength(2.5)
+                    .build();
+            grabPickup6 = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farScore1Pose.mirror(), farPickup1Pose.mirror()))
                     .setLinearHeadingInterpolation(farScore1Pose.mirror().getHeading(), farPickup1Pose.mirror().getHeading())
                     .setNoDeceleration()
                     .build();
 
-            scorePickup5 = robot.follower.pathBuilder()
+            scorePickup6 = robot.follower.pathBuilder()
                     .addPath(new BezierLine(farPickup1Pose.mirror(), farScore1Pose.mirror()))
                     .setLinearHeadingInterpolation(farPickup1Pose.mirror().getHeading(), farScore1Pose.mirror().getHeading())
                     .setBrakingStrength(2.5)
@@ -222,28 +249,28 @@ public class Auto extends LinearOpMode {
                 robot.follower.followPath(grabPickup2);
                 increment();
             } else if (stage == 6 && moveToNext()) {
+                robot.follower.followPath(scorePickup2);
+                elapsedTime.reset();
+                stage = 100;
+            } else if (stage == 100) {
                if (robot.colorSensors.ballsInIntake()){
                    processor.override(new IntakeTransfer());
+                   stage = 7;
+               } else if (elapsedTime.milliseconds() > 1000){
+                   stage = 7;
                }
-                robot.follower.followPath(scorePickup2);
-                increment();
-            } else if (stage == 7 && robot.follower.atParametricEnd()) {
+
+           } else if (stage == 7 && robot.follower.atParametricEnd()) {
                 processor.override(new Shoot());
                 increment();
             } else if (stage == 8 && !processor.isBusy()) {
-
                 processor.override(new IntakeBall(false));
                 robot.follower.followPath(grabPickup3);
                 increment();
 
             } else if (stage == 9 && moveToNext()) {
-               if (robot.colorSensors.ballsInIntake()){
-                   processor.override(new IntakeTransfer());
-               }
-               if (elapsedTime.milliseconds()>500){
-                   increment();
-               }
                robot.follower.followPath(scorePickup3);
+               increment();
 
             } else if (stage == 10 && robot.follower.atParametricEnd()) {
                 processor.override(new Shoot());
@@ -271,11 +298,21 @@ public class Auto extends LinearOpMode {
                 processor.override(new Shoot());
                 increment();
             } else if (stage == 17 && !processor.isBusy()) {
-                //reset
-                robot.follower.followPath(park);
+                robot.follower.followPath(grabPickup6);
                 increment();
 
-            }
+            }else if (stage == 18 && moveToNext()) {
+               processor.override(new IntakeTransfer());
+               robot.follower.followPath(scorePickup6);
+               increment();
+           } else if (stage == 19 && robot.follower.atParametricEnd()) {
+               processor.override(new Shoot());
+               increment();
+           } else if (stage == 20 && !processor.isBusy()) {
+               robot.follower.followPath(park);
+               increment();
+
+           }
             telemetry.addData("stage", stage);
             telemetry.update();
             robot.update();

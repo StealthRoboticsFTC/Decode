@@ -26,6 +26,7 @@ public class Lights {
                 lights[i].setPosition(0.28);
             }
         }
+        lights[1].setPosition(0.28);
 
     }
 

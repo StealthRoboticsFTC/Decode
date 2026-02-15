@@ -80,6 +80,10 @@ public class Turret {
 
     public void noAutoAim(){useAutoAim = false;}
 
+    public boolean isUseAutoAim(){
+        return useAutoAim;
+    }
+
     public boolean atTarget(){
        return getTurretAngle() > controller.getTarget() - 2.5 && getTurretAngle() < controller.getTarget() + 2.5;
     }

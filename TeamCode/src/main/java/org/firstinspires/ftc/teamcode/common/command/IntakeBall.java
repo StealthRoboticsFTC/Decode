@@ -29,7 +29,7 @@ public class IntakeBall implements Command{
                 robot.pins.closeMostPins();
                 stage = 4;
             }
-        } else if (stage == 2 && robot.intake.threeBalls() && robot.colorSensors.ballsInIntake()) {
+        } else if (stage == 2 && robot.colorSensors.ballsInIntake()) {
             Robot.threeBalls = true;
             robot.pins.setPinOpen(0);
             elapsedTime.reset();

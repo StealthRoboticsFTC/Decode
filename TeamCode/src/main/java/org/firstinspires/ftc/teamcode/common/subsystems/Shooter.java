@@ -22,7 +22,11 @@ public class Shooter {
     private final static double ki = 0;
     private final static double kd = 0;
     private final static double kf = 0.0005;
-            ;
+
+    private boolean useAutoAim = true;
+    private int noAutoAimTarget = 1100;
+
+
 
     private final PIDFController controller;
 
@@ -67,12 +71,28 @@ public class Shooter {
     }
 
     public void update( double targetVelocity){
+        if (!useAutoAim){
+            targetVelocity = noAutoAimTarget;
+        }
         controller.setTargetPosition(targetVelocity);
         controller.updateFeedForwardInput(controller.getTargetPosition());
         controller.updatePosition(shooterLeft.getVelocity());
         shooterRight.setPower(controller.run());
         shooterLeft.setPower(controller.run());
 
+    }
+    public void setTargetVelocity(int targetAngle){
+        noAutoAimTarget = targetAngle;
+        useAutoAim = false;
+    }
+    public void useAutoAim(){
+        useAutoAim = true;
+    }
+
+    public void noAutoAim(){useAutoAim = false;}
+
+    public boolean isUseAutoAim(){
+        return useAutoAim;
     }
 
 
