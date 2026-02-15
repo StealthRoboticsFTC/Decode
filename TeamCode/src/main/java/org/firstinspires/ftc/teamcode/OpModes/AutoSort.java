@@ -136,7 +136,7 @@ public class AutoSort extends LinearOpMode {
 
         robot.follower.setMaxPower(1);
         Robot.sort = true;
-        Robot.useAutoAim = false;
+
         robot.limelight.setPipLine(null);
         while (!isStopRequested()){
             if (stage == 1){
@@ -164,7 +164,7 @@ public class AutoSort extends LinearOpMode {
 
 
             } else if (stage == 4 ) {
-                Robot.useAutoAim = true;
+
                 processor.override(new Sort(Robot.motif));
                 increment();
             } else if (stage == 5 && elapsedTime.milliseconds()>shootTime) {

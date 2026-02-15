@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.common.Processor;
 import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.command.IntakeBall;
+import org.firstinspires.ftc.teamcode.common.command.IntakeSort;
 import org.firstinspires.ftc.teamcode.common.command.OuttakeBall;
 import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
@@ -17,15 +18,22 @@ import org.firstinspires.ftc.teamcode.common.controller.Button;
 import org.firstinspires.ftc.teamcode.common.controller.ButtonListener;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
+import java.util.Objects;
+
 @TeleOp
 public class DriverControl extends LinearOpMode {
     private Robot robot;
 
     private ButtonListener listener;
 
+    private Boolean vibrate;
+
+    private Boolean autoShoot;
+
     private static Pose startingPose;
 
     private Processor processor;
+
 
 
     @Override
@@ -33,12 +41,15 @@ public class DriverControl extends LinearOpMode {
         listener = new ButtonListener(gamepad1);
         robot = new Robot(hardwareMap);
         processor = new Processor();
+        vibrate = true;
+        autoShoot = true;
 
         listener.addListener(Button.R_TRIGGER_DOWN, ()->{
             if (Robot.sort){
                 processor.override(new Sort(21));
             } else {
                 processor.override(new Shoot());
+                vibrate = true;
             }
 
         });
@@ -51,49 +62,73 @@ public class DriverControl extends LinearOpMode {
         });
         listener.addListener(Button.L_TRIGGER_DOWN, ()->{
             if (Robot.sort){
-                processor.override(new IntakeBall(true));
+                processor.override(new IntakeSort());
             } else {
-                processor.override(new IntakeBall(false));
+                processor.override(new IntakeBall(true));
             }
 
         });
+
         listener.addListener(Button.L_BUMPER_DOWN, ()->{
             processor.override(new OuttakeBall());
         });
 
         listener.addListener(Button.CROSS_DOWN, ()->{
-            processor.override(new Reset());
+            robot.turret.noAutoAim();
 
         });
 
-        Robot.useAutoAim = true;
+        Robot.color = Color.RED;
+
         Robot.sort = false;
-        robot.limelight.setPipLine(Robot.color);
+        robot.limelight.setPipLine(Color.RED);
         if (Robot.robotPos != null){
             robot.follower.setStartingPose(Robot.robotPos);
         } else {
-            robot.follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
+            robot.follower.setStartingPose(new Pose(117,132,Math.toRadians(315)));
         }
         robot.follower.update();
         waitForStart();
+        
 
         robot.follower.setMaxPower(1);
-        robot.follower.startTeleOpDrive(true);
+        robot.follower.startTeleOpDrive(false);
 
         while (!isStopRequested()){
+            if (Robot.threeBalls && vibrate == true && processor.getCommand() instanceof IntakeBall){
+                gamepad1.rumble(500);
+                vibrate = false;
+            }
+
+            if (processor.getLastExecuted() instanceof Shoot && !processor.isBusy() && autoShoot){
+                processor.override(new IntakeBall(true));
+            }
+            /*if (!processor.isBusy() && Robot.threeBalls && (robot.inBackTriangle() || robot.inFrontTriangle())){
+                gamepad1.rumble(500);
+                processor.override(new Shoot());
+                vibrate = true;
+            }*/
 
             robot.follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
-            robot.limelight.setPipLine(Robot.color);
+            robot.limelight.setPipLine(Color.RED);
             robot.update();
             listener.update();
             processor.update(robot);
-            telemetry.addData("id", robot.limelight.getMotif());
+
+            telemetry.addData("BallColors", robot.colorSensors.getColors());
+            telemetry.addData("colorSensorBall", robot.colorSensors.ballsInIntake());
+            telemetry.addData("intakeCurrent", robot.intake.getCurrent());
+            telemetry.addData("intakeVelocity", robot.intake.getVelocity());
+            telemetry.addData("vibrate", vibrate);
+
+            telemetry.addData("inZone", robot.inFrontTriangle() || robot.inBackTriangle());
             telemetry.addData("robotPos", Robot.robotPos);
             telemetry.addData("turretAngle", robot.turret.getTurretAngle());
             telemetry.addData("sort", Robot.sort);
             telemetry.addData("distance", robot.limelight.getDistance());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());
+
 
             telemetry.update();
         }

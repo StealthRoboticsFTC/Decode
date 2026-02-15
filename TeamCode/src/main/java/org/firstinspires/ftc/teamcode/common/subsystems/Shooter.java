@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.common.command.Command;
 public class Shooter {
     private final DcMotorEx shooterLeft;
     private final DcMotorEx shooterRight;
-    private final Servo flap;
+
 
     private final static int offVelocity = 0;
 
@@ -34,7 +34,7 @@ public class Shooter {
         shooterRight = hardwareMap.get(DcMotorEx.class, "motor_sr");
         shooterRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        flap = hardwareMap.get(Servo.class, "servo_sf");
+
 
         PIDFCoefficients coefficients = new PIDFCoefficients(kp, ki, kd, kf);
         controller = new PIDFController(coefficients);
@@ -49,14 +49,14 @@ public class Shooter {
     }
 
     public void setTargetVelocity(double targetVelocity, double flapPos){
-        flap.setPosition(flapPos);
+
 
         controller.setTargetPosition(targetVelocity);
 
     }
 
     public boolean atTargetVelocity(){
-        return shooterLeft.getVelocity() > controller.getTargetPosition() - 50 && shooterLeft.getVelocity() < controller.getTargetPosition() + 50;
+        return shooterLeft.getVelocity() > controller.getTargetPosition() - 20 && shooterLeft.getVelocity() < controller.getTargetPosition() + 20;
     }
 
     public double getVelocity(){
@@ -66,13 +66,12 @@ public class Shooter {
         return controller.getTargetPosition();
     }
 
-    public void update( double targetVelocity, double flapPos){
+    public void update( double targetVelocity){
         controller.setTargetPosition(targetVelocity);
         controller.updateFeedForwardInput(controller.getTargetPosition());
         controller.updatePosition(shooterLeft.getVelocity());
         shooterRight.setPower(controller.run());
         shooterLeft.setPower(controller.run());
-        flap.setPosition(flapPos);
 
     }
 

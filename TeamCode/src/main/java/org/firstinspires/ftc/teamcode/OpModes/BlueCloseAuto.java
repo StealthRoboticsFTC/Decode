@@ -79,7 +79,7 @@ public class BlueCloseAuto extends LinearOpMode {
                 .build();
 
         waitForStart();
-        Robot.useAutoAim = true;
+
         Robot.sort = false;
 
         Robot.color = Color.BLUE;

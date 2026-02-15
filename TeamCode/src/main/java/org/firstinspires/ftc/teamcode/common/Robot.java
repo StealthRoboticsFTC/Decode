@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.command.Sort;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.common.enums.Color;
 import org.firstinspires.ftc.teamcode.common.enums.Position;
 import org.firstinspires.ftc.teamcode.common.subsystems.ColorSensors;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.common.subsystems.Lifter;
 import org.firstinspires.ftc.teamcode.common.subsystems.Lights;
 import org.firstinspires.ftc.teamcode.common.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.common.subsystems.Pins;
@@ -35,10 +37,9 @@ public class Robot {
 
     public static Position position;
 
-    public static Boolean useAutoAim;
-
-
     public static Boolean sort;
+
+    public static Boolean threeBalls = false;
 
     public Follower follower;
     public Intake intake;
@@ -53,6 +54,12 @@ public class Robot {
     public Lights lights;
     public Turret turret;
 
+    public Lifter lifter;
+
+
+
+
+
 
     public Robot(HardwareMap hardwareMap){
 
@@ -62,6 +69,7 @@ public class Robot {
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
         pins = new Pins(hardwareMap);
+        lifter = new Lifter(hardwareMap);
         colorSensors = new ColorSensors(hardwareMap);
         lights = new Lights(hardwareMap);
         turret = new Turret(hardwareMap);
@@ -75,7 +83,7 @@ public class Robot {
         backlog.addAngle(turret.getTurretAngle());
         limelight.update();
         follower.update();
-        shooter.update(getShooterTargetVelocity(getDistance()), getFlapPos(getDistance()));
+        shooter.update(getShooterTargetVelocity(getDistance()));
         turret.update(getTurretTarget());
         if (sort){
             lights.setLights(colorSensors.getColors());
@@ -91,29 +99,17 @@ public class Robot {
     }
     private double getShooterTargetVelocity(double distance){
 
-        double velocity =  5.89091 * distance + 606.54545;
-        if (useAutoAim){
-            if (velocity > 1600){
-                return 1500;
-            } else {
-                return velocity;
-            }
-        } else {
-            return 1000;
+        double velocity =  -(0.000390443 * Math.pow(distance, 3)) + (0.14533 * Math.pow(distance, 2)) - (12.70246 * distance) + 1303.07692;
+
+
+        if (velocity > 1500){
+            return 1500;
+        } else{
+            return velocity;
         }
 
     };
-    private double getFlapPos(Double distance){
-       if (distance >= 160){
-           return 0.525;
-       } else if (distance <= 80) {
-           return 0.55;
-       } else if (distance > 80 && distance<110) {
-           return 0.525;
-       } else {
-           return 0.5;
-       }
-    }
+
 
     private double getDistance(){
         double distance;
@@ -131,24 +127,18 @@ public class Robot {
 
     private double getTurretTarget(){
         double targetAngle;
-
         if (limelight.limeLightResult()){
             double tx = limelight.getResult().getTx();
-            double prevAngle = backlog.getAngle(limelight.getResult().getControlHubTimeStampNanos() );
+            double prevAngle= backlog.getAngle(limelight.getResult().getControlHubTimeStampNanos());
             targetAngle = prevAngle - tx;
         } else {
-            double gobleAngle = Math.atan2(goalPos.getY() - robotPos.getY(), goalPos.getX() - robotPos.getX());
-            double turretHeading = robotPos.getHeading() + Math.PI;
-            if (turretHeading > Math.PI) turretHeading -= 2 * Math.PI;
-            if (turretHeading < -Math.PI) turretHeading += 2 * Math.PI;
-            targetAngle = Math.toDegrees(gobleAngle - turretHeading);
-            if (targetAngle > 180) targetAngle -= 360;
+            double globalAngle=Math.atan2(goalPos.getY()-robotPos.getY(),goalPos.getX()-robotPos.getX());
+            double targetAngleRad = globalAngle - robotPos.getHeading()-Math.PI;
+            targetAngleRad =Math.atan2(Math.sin(targetAngleRad),Math.cos(targetAngleRad));
+            targetAngle = Math.toDegrees(targetAngleRad);
         }
-        if (useAutoAim){
-            return targetAngle;
-        } else {
-            return turretTargetAngle;
-        }
+
+        return targetAngle;
     }
     public void setTurretAngle(double turretTargetAngle){
         this.turretTargetAngle = turretTargetAngle;
@@ -160,4 +150,49 @@ public class Robot {
             goalPos = blueGoalPos;
         }
     }
+
+    public boolean inFrontTriangle() {
+        double px = robotPos.getX();
+        double py = robotPos.getY();
+        double ax = 0;
+        double ay = 144;
+        double bx = 72;
+        double by = 72;
+        double cx = 144;
+        double cy = 144;
+        double d1 = sign(px, py, ax, ay, bx, by);
+        double d2 = sign(px, py, bx, by, cx, cy);
+        double d3 = sign(px, py, cx, cy, ax, ay);
+
+        boolean hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        boolean hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+        return !(hasNeg && hasPos) && getDistance() > 60;
+    }
+
+    public boolean inBackTriangle(){
+        double px = robotPos.getX();
+        double py = robotPos.getY();
+        double ax = 30;
+        double ay = 0;
+        double bx = 72;
+        double by = 33;
+        double cx = 99;
+        double cy = 0;
+        double d1 = sign(px, py, ax, ay, bx, by);
+        double d2 = sign(px, py, bx, by, cx, cy);
+        double d3 = sign(px, py, cx, cy, ax, ay);
+        boolean hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        boolean hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+        return !(hasNeg && hasPos);
+    }
+
+
+    private double sign(double px, double py,
+                               double ax, double ay,
+                               double bx, double by) {
+        return (px - bx) * (ay - by) - (ax - bx) * (py - by);
+    }
+
 }

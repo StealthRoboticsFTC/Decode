@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class Intake {
     private final DcMotorEx intake;
     private final static double intakeOn = 1;
@@ -27,4 +29,16 @@ public class Intake {
     }
 
     public void outtake(){intake.setPower(outTake);}
+
+    public boolean threeBalls(){
+        return intake.getCurrent(CurrentUnit.MILLIAMPS) > 2000 ;
+    }
+    public double getCurrent(){
+        return intake.getCurrent(CurrentUnit.MILLIAMPS);
+
+    }
+    public double getVelocity(){
+        return intake.getVelocity();
+    }
+
 }

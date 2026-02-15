@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.common.command;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.common.Robot;
 
 public class IntakeBall implements Command{
     private int stage = 0;
+
+    ElapsedTime elapsedTime = new ElapsedTime();
     boolean allPinsDown;
     public IntakeBall(Boolean allPinsDown){
         this.allPinsDown = allPinsDown;
@@ -12,9 +16,9 @@ public class IntakeBall implements Command{
     public void update(Robot robot) {
         if (stage == 0 ){
 
-            robot.transfer.reverseTransfer();
-            robot.pins.setPinsToIntake();
+            robot.transfer.turnOnTransfer();
             robot.intake.turnOnIntake();
+            robot.lifter.liftBlock();
 
             stage++;
         } else if (stage == 1) {
@@ -22,16 +26,26 @@ public class IntakeBall implements Command{
                 robot.pins.closeAllPin();
                 stage++;
             } else {
-                robot.pins.setPinsToIntake();
-                stage++;
+                robot.pins.closeMostPins();
+                stage = 4;
             }
+        } else if (stage == 2 && robot.intake.threeBalls() && robot.colorSensors.ballsInIntake()) {
+            Robot.threeBalls = true;
+            robot.pins.setPinOpen(0);
+            elapsedTime.reset();
+            stage++;
+        } else if (stage == 3 && elapsedTime.milliseconds()>750) {
+
+            robot.pins.setPinOpen(1);
+            robot.pins.closeMostPins();
+            stage++;
         }
 
     }
 
     @Override
     public boolean isDone() {
-        return stage==2;
+        return stage==4;
     }
 }
 

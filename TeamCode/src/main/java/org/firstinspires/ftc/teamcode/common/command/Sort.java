@@ -28,8 +28,11 @@ public class Sort implements Command{
         if (stage == 0){
             robot.intake.turnOnIntake();
             robot.transfer.turnOnTransfer();
+            robot.lifter.liftDown();
             currentColors = robot.colorSensors.getColors();
-            stage++;
+            if (!currentColors.contains(BallColors.None) || time.milliseconds()>1000){
+                stage++;
+            } 
         } else if (stage == 1){
             int index = currentColors.indexOf(motif[0]);
             if (index < 0){
@@ -55,7 +58,7 @@ public class Sort implements Command{
             if (index < 0){
                 stage = 4;
             }else {
-                Robot.useAutoAim = true;
+
                 robot.pins.setPinOpen(index);
                 currentColors.set(index, BallColors.None);
                 time.reset();

@@ -31,6 +31,8 @@ public class CustomPIDController {
         target = pos;
     }
 
+    public double getTarget(){return target;}
+
     public double update(double pos, double vel) {
         long time = System.nanoTime();
         double posError = target - pos;

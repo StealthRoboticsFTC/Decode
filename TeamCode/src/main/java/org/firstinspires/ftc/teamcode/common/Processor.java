@@ -84,4 +84,11 @@ public class Processor {
         add(command);
         return command;
     }
+    public Command getLastExecuted(){
+        return lastExecuted;
+    }
+
+    public Command getCommand(){
+        return commandQueue.peek();
+    }
 }

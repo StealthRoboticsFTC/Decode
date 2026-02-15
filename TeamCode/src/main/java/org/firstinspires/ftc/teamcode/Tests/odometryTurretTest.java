@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp
 @Configurable
 public class odometryTurretTest extends LinearOpMode {
-    private final Pose goalPos = new Pose(135, 129, Math.toRadians(45));
+    private final Pose goalPos = new Pose(144, 144, Math.toRadians(45));
     public static double newX = 0;
     public static double newY = 0;
 
@@ -32,7 +32,7 @@ public class odometryTurretTest extends LinearOpMode {
     public static double ki = 0.007;
     public static double kd = 0.0015;
     public static double kf = 0.001;
-    public static double ks = 0.05;
+    public static double ks = 0.0825;
     public static long ms_comp = 40;
 
     private TimestampedAngleBacklog backlog = new TimestampedAngleBacklog();
@@ -43,7 +43,7 @@ public class odometryTurretTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Follower follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(8, 5, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(8,5,Math.toRadians(90)));
 
 
         DcMotorEx turret = hardwareMap.get(DcMotorEx.class, "motor_tm");
@@ -69,6 +69,7 @@ public class odometryTurretTest extends LinearOpMode {
             controller.setkS(ks);
 
             double targetAngle;
+            double globalAngle = 0;
             boolean useVision;
             double k = -360. / (4096. * (70. / 20.));
             double turretAngle = k * turret.getCurrentPosition();
@@ -86,17 +87,16 @@ public class odometryTurretTest extends LinearOpMode {
             } else {
 
                 Pose robotPos = follower.getPose();
-                double gobleAngle = Math.atan2(goalPos.getY() - robotPos.getY(), goalPos.getX() - robotPos.getX());
-                double turretHeading = robotPos.getHeading() + Math.PI;
-                if (turretHeading > Math.PI) turretHeading -= 2 * Math.PI;
-                if (turretHeading < -Math.PI) turretHeading += 2 * Math.PI;
-                targetAngle = Math.toDegrees(gobleAngle - turretHeading);
-                if (targetAngle > 180) targetAngle -= 360;
+                globalAngle = Math.atan2(goalPos.getY() - robotPos.getY(), goalPos.getX() - robotPos.getX());
+
+                double targetAngleRad = globalAngle - robotPos.getHeading() - Math.PI;
+                targetAngleRad = Math.atan2(Math.sin(targetAngleRad), Math.cos(targetAngleRad));
+                targetAngle = Math.toDegrees(targetAngleRad);
                 useVision = false;
             }
             boolean atAngle = Math.abs(turretAngle - targetAngle) <= 1;
 
-            if (Math.abs(targetAngle) < 125 && !atAngle) {
+            if (Math.abs(targetAngle) < 165 && !atAngle) {
                 controller.setTarget(targetAngle);
                 double power = Math.clamp(controller.update(turretAngle, turretVelocity), -0.65, 0.65);
                 turret.setPower(power);
@@ -113,6 +113,8 @@ public class odometryTurretTest extends LinearOpMode {
 
             panelsTelemetry.addData("atAngle", atAngle);
             panelsTelemetry.addData("targetAngle", targetAngle);
+            panelsTelemetry.addData("globalAngle", Math.toDegrees(globalAngle));
+            panelsTelemetry.addData("follower", follower.getPose());
 
             panelsTelemetry.addData("turretAngle", turretAngle);
             panelsTelemetry.addData("turretPosition", turret.getCurrentPosition());

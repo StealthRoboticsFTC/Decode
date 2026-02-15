@@ -20,13 +20,13 @@ public class ShooterPIDTest extends LinearOpMode {
     public static double servoPosition = 0.8;
     DcMotorEx shooterMotorLeft;
     DcMotorEx shooterMotorRight;
-    Servo flap;
+
     PIDFController controller;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        flap = hardwareMap.get(Servo.class, "servo_sf");
+
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "motor_sl");
         shooterMotorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -37,7 +37,7 @@ public class ShooterPIDTest extends LinearOpMode {
         controller = new PIDFController(new PIDFCoefficients(kp, ki, kd, kf));
         waitForStart();
         while (!isStopRequested()){
-            flap.setPosition(servoPosition);
+
             controller.setD(kd);
             controller.setF(kf);
             controller.setP(kp);

@@ -39,15 +39,17 @@ public class SystemTest extends LinearOpMode {
 
     public static int shooterTargetVelocity = 0;
 
-    public static double flapPosition = 0.8;
+
 
     public static double intakePower = 0;
 
     public static double transferPower = 0;
 
-    public static double leftPinPositon = 0;
+    public static double leftPinPositon = 0.625;
     public static double centerPinPosition = 1;
-    public static double rightPinPosition = 0.55;
+    public static double rightPinPosition = 0.525;
+
+    public static double liftPos = 0.275;
 
     LoopTimer timer = new LoopTimer();
 
@@ -62,7 +64,6 @@ public class SystemTest extends LinearOpMode {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         PIDFController turretController =  new PIDFController(new PIDFCoefficients(0.05 , 0, 0.002, 0));
-        Servo flap = hardwareMap.get(Servo.class, "servo_sf");
         DcMotorEx shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "motor_sl");
         shooterMotorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -91,6 +92,10 @@ public class SystemTest extends LinearOpMode {
         Servo rightLight = hardwareMap.get(Servo.class, "light_rl");
         Servo centerLight = hardwareMap.get(Servo.class, "light_cl");
 
+        Servo leftLift = hardwareMap.get(Servo.class, "servo_ll");
+        Servo rightLift = hardwareMap.get(Servo.class, "servo_rl");
+        rightLift.setDirection(Servo.Direction.REVERSE);
+
         Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limeLight");
 
         Follower follower = Constants.createFollower(hardwareMap);
@@ -102,14 +107,13 @@ public class SystemTest extends LinearOpMode {
         limelight.start();
         while (!isStopRequested()){
             timer.start();
+            leftLift.setPosition(liftPos);
+            rightLift.setPosition(liftPos);
             if (turretTargetPosition != 0){
                 turretController.setTargetPosition(turretTargetPosition);
                 turretController.updatePosition(turret.getCurrentPosition());
                 turret.setPower(turretController.run());
-                telemetry.addData("power", turretController.run());
-                telemetry.addData("currentPosition", turret.getCurrentPosition());
-                telemetry.addData("TargetPosition", turretTargetPosition);
-                telemetry.update();
+
             }
             if (shooterTargetVelocity != 0){
                 shooterController.updateFeedForwardInput(shooterTargetVelocity);
@@ -117,7 +121,6 @@ public class SystemTest extends LinearOpMode {
                 shooterController.updatePosition(shooterMotorLeft.getVelocity());
                 shooterMotorRight.setPower(shooterController.run());
                 shooterMotorLeft.setPower(shooterController.run());
-                flap.setPosition(flapPosition);
                 double distance = follower.getPose().distanceFrom(goalPos);
                 telemetry.addData("TargetVelocity", shooterTargetVelocity);
                 telemetry.addData("CurrentVelocity", shooterMotorLeft.getVelocity());
@@ -225,7 +228,6 @@ public class SystemTest extends LinearOpMode {
 
             follower.update();
             timer.end();
-            telemetry.addData("loopTime", timer.getMs());
 
             telemetry.update();
 

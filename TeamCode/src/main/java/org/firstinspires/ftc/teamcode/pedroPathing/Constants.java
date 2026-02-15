@@ -15,12 +15,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(15.422)
-            .forwardZeroPowerAcceleration(-42.26925760591532)
-            .lateralZeroPowerAcceleration(-69.79207717348403)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0.0025,0.0425))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.625,0,0.05,0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0,0.0005,0.6,0.01))
+            .mass(15.88)
+            .forwardZeroPowerAcceleration(-39.83615539056046)
+            .lateralZeroPowerAcceleration(-68.9212693945856)
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryHeadingPIDF(true)
+            .useSecondaryDrivePIDF(true)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.2,0,0.02,0.03))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.015))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.75,0,0.0625,0.025))
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.25, 0, 0.025, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0,0.001,0.6,0.03))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0, 0.0005, 0.6, 0.03))
             .centripetalScaling(0.000525);
 
 
@@ -35,8 +41,8 @@ public class Constants {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
 
-            .xVelocity( 58.79998202586737)
-            .yVelocity( 43.69871076448696);
+            .xVelocity(64.92161980576404)
+            .yVelocity(49.42430054672121);
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-4.75)
             .strafePodX(1.5)
@@ -56,9 +62,9 @@ public class Constants {
             0.1,
             0.009,
             50,
-            1,
+            1.25,
             10,
-            2
+            0.5
     );
     //Add custom localizers or drivetrains here
     public static Follower createFollower(HardwareMap hardwareMap) {
