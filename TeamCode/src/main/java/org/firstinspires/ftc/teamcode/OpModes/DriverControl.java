@@ -25,13 +25,9 @@ import java.util.Objects;
 public class DriverControl extends LinearOpMode {
     private Robot robot;
 
-    private ButtonListener listener;
-
     private Boolean vibrate;
 
-    private Boolean autoShoot;
 
-    private static Pose startingPose;
 
     private Processor processor;
 
@@ -39,11 +35,10 @@ public class DriverControl extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        listener = new ButtonListener(gamepad1);
+        ButtonListener listener = new ButtonListener(gamepad1);
         robot = new Robot(hardwareMap);
         processor = new Processor();
         vibrate = true;
-        autoShoot = true;
 
         listener.addListener(Button.R_TRIGGER_DOWN, ()->{
             if (Robot.sort){
@@ -98,15 +93,17 @@ public class DriverControl extends LinearOpMode {
         });
 
         listener.addListener(Button.TRIANGLE_DOWN, ()->{
+            robot.limelight.setPipLine(null);
             robot.limelight.getMotif();
+            robot.limelight.setPipLine(Robot.color);
         });
 
 
 
-        Robot.color = Color.RED;
+
 
         Robot.sort = false;
-        robot.limelight.setPipLine(Color.RED);
+        robot.limelight.setPipLine(Robot.color);
         if (Robot.robotPos != null){
             robot.follower.setStartingPose(Robot.robotPos);
         } else {
@@ -138,7 +135,7 @@ public class DriverControl extends LinearOpMode {
             }*/
 
             robot.follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
-            robot.limelight.setPipLine(Color.RED);
+            robot.limelight.setPipLine(Robot.color);
             robot.update();
             listener.update();
             processor.update(robot);
@@ -149,7 +146,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("intakeVelocity", robot.intake.getVelocity());
             telemetry.addData("vibrate", vibrate);
 
-            telemetry.addData("inZone", robot.inFrontTriangle() || robot.inBackTriangle());
+
             telemetry.addData("robotPos", Robot.robotPos);
             telemetry.addData("turretAngle", robot.turret.getTurretAngle());
             telemetry.addData("sort", Robot.sort);

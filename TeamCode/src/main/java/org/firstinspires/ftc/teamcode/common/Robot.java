@@ -99,7 +99,7 @@ public class Robot {
     }
     private double getShooterTargetVelocity(double distance){
 
-        double velocity =  -(0.00034965 * Math.pow(distance, 3)) + (0.134066 * Math.pow(distance, 2)) - (11.87313 * distance) + 1286.15385;
+        double velocity =  -(0.000460373 * Math.pow(distance, 3)) + (0.166708 * Math.pow(distance, 2)) - (14.74742* distance) + 1363.25674;
 
 
         if (velocity > 1500){

@@ -17,6 +17,7 @@ public class Shoot implements Command{
             robot.pins.setPinOpen(1);
 
 
+
             elapsedTime.reset();
             stage++;
         } else if (stage == 1 && elapsedTime.milliseconds() > 125) {
@@ -31,13 +32,15 @@ public class Shoot implements Command{
             Robot.threeBalls = false;
             robot.lifter.liftUp();
             stage++;
+        } else if (stage == 4 && elapsedTime.milliseconds() > 125) {
+            stage++;
         }
 
     }
 
     @Override
     public boolean isDone() {
-        return stage==4;
+        return stage==5;
     }
 }
 
