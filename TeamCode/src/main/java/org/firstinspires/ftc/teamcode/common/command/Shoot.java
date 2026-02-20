@@ -9,12 +9,13 @@ public class Shoot implements Command{
     ElapsedTime elapsedTime = new ElapsedTime();
     @Override
     public void update(Robot robot) {
-        if (stage == 0 && robot.turret.atTarget() && robot.shooter.atTargetVelocity()){
+        if (stage == 0 && robot.turret.atTarget() && robot.shooter.atTargetVelocity() && !robot.follower.isBusy()){
 
             robot.intake.turnOnIntake();
             robot.lifter.liftDown();
             robot.transfer.turnOnTransfer();
             robot.pins.setPinOpen(1);
+            robot.follower.holdPoint(Robot.robotPos);
 
 
 
@@ -31,8 +32,13 @@ public class Shoot implements Command{
         } else if (stage == 3 && elapsedTime.milliseconds() > 750) {
             Robot.threeBalls = false;
             robot.lifter.liftUp();
+            elapsedTime.reset();
             stage++;
-        } else if (stage == 4 && elapsedTime.milliseconds() > 125) {
+        } else if (stage == 4 && elapsedTime.milliseconds() > 50) {
+            if (robot.follower.isTeleopDrive()){
+                robot.follower.startTeleOpDrive(false);
+            }
+
             stage++;
         }
 

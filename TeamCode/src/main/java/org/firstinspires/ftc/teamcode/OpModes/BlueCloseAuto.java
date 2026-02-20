@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.common.command.Reset;
 import org.firstinspires.ftc.teamcode.common.command.Shoot;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
-@Autonomous
+
 public class BlueCloseAuto extends LinearOpMode {
     Robot robot;
     Processor processor;

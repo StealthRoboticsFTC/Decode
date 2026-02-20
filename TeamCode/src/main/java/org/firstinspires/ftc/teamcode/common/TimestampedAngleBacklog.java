@@ -27,7 +27,7 @@ public class TimestampedAngleBacklog {
 
     private int head = 0;
     private int size = 0;
-    private TimestampedAngle[] poses = new TimestampedAngle[MAX_POSES];
+    private final TimestampedAngle[] poses = new TimestampedAngle[MAX_POSES];
 
 
     public TimestampedAngleBacklog() {

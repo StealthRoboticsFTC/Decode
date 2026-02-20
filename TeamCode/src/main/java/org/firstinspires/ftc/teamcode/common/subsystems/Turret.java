@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.common.Robot;
 import org.firstinspires.ftc.teamcode.common.enums.Color;
 
 public class Turret {
-    private DcMotorEx turret;
+    private final DcMotorEx turret;
 
     private int noAutoAimTarget = 0;
 
@@ -35,10 +35,10 @@ public class Turret {
 
         controller = new CustomPIDController();
         controller.setkD(0.0015);
-        controller.setkP(4);
+        controller.setkP(5);
         controller.setkI(0.007);
         controller.setkF(0.001);
-        controller.setkS(0.0825);
+        controller.setkS(0.05);
 
     }
 

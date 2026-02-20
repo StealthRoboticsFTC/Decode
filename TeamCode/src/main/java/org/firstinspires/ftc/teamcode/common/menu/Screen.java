@@ -8,8 +8,8 @@ import java.util.List;
  * @param <T> the type of data to select
  */
 public class Screen<T> {
-    private List<T> options;
-    private String text;
+    private final List<T> options;
+    private final String text;
     private int currentSelection;
 
     /**

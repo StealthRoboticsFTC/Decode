@@ -28,9 +28,7 @@ public class DriverControl extends LinearOpMode {
     private Boolean vibrate;
 
 
-
     private Processor processor;
-
 
 
     @Override
@@ -40,24 +38,21 @@ public class DriverControl extends LinearOpMode {
         processor = new Processor();
         vibrate = true;
 
-        listener.addListener(Button.R_TRIGGER_DOWN, ()->{
-            if (Robot.sort){
-                processor.override(new Sort(21));
+        listener.addListener(Button.R_TRIGGER_DOWN, () -> {
+            gamepad1.rumble(500);
+            if (Robot.sort) {
+                processor.override(new Sort(Robot.motif));
             } else {
                 processor.override(new Shoot());
                 vibrate = true;
             }
 
         });
-        listener.addListener(Button.R_BUMPER_DOWN, ()->{
-            if (Robot.sort){
-                Robot.sort = false;
-            } else {
-                Robot.sort = true;
-            }
+        listener.addListener(Button.R_BUMPER_DOWN, () -> {
+            Robot.sort = !Robot.sort;
         });
-        listener.addListener(Button.L_TRIGGER_DOWN, ()->{
-            if (Robot.sort){
+        listener.addListener(Button.L_TRIGGER_DOWN, () -> {
+            if (Robot.sort) {
                 processor.override(new IntakeSort());
             } else {
                 processor.override(new IntakeBall(true));
@@ -65,67 +60,69 @@ public class DriverControl extends LinearOpMode {
 
         });
 
-        listener.addListener(Button.L_BUMPER_DOWN, ()->{
+        listener.addListener(Button.L_BUMPER_DOWN, () -> {
             processor.override(new OuttakeBall());
         });
 
-        listener.addListener(Button.L_STICK_DOWN, ()->{
-            if (robot.turret.isUseAutoAim()){
+        listener.addListener(Button.L_STICK_DOWN, () -> {
+            if (robot.turret.isUseAutoAim()) {
                 robot.turret.noAutoAim();
-            } else  {
+            } else {
                 robot.turret.useAutoAim();
             }
 
         });
-        listener.addListener(Button.R_STICK_DOWN, ()->{
-            if (robot.shooter.isUseAutoAim()){
+        listener.addListener(Button.R_STICK_DOWN, () -> {
+            if (robot.shooter.isUseAutoAim()) {
                 robot.shooter.noAutoAim();
-            } else  {
+            } else {
                 robot.shooter.useAutoAim();
             }
 
         });
-        listener.addListener(Button.CROSS_DOWN, ()->{
+        listener.addListener(Button.CROSS_DOWN, () -> {
             processor.override(new Reset());
         });
-        listener.addListener(Button.CIRCLE_DOWN, ()->{
+        listener.addListener(Button.CIRCLE_DOWN, () -> {
             processor.override(new IntakeTransfer());
         });
 
-        listener.addListener(Button.TRIANGLE_DOWN, ()->{
-            robot.limelight.setPipLine(null);
-            robot.limelight.getMotif();
-            robot.limelight.setPipLine(Robot.color);
+        listener.addListener(Button.TRIANGLE_DOWN, () -> {
+            robot.follower.startTeleOpDrive(true);
         });
 
 
-
-
-
         Robot.sort = false;
-        robot.limelight.setPipLine(Robot.color);
-        if (Robot.robotPos != null){
+        if (Robot.robotPos != null) {
             robot.follower.setStartingPose(Robot.robotPos);
         } else {
-            robot.follower.setStartingPose(new Pose(117,132,Math.toRadians(315)));
+            robot.follower.setStartingPose(new Pose(117, 132, Math.toRadians(315)));
         }
         robot.follower.update();
+        while (opModeInInit()) {
+            robot.limelight.setPipLine(null);
+            if (robot.limelight.getMotif() != 0) {
+                Robot.motif = robot.limelight.getMotif();
+            }
+            robot.limelight.update();
+        }
         waitForStart();
-        
+
 
         robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(false);
 
-        while (!isStopRequested()){
-            if (Robot.threeBalls && vibrate == true && processor.getCommand() instanceof IntakeBall){
+        while (!isStopRequested()) {
+            if (Robot.threeBalls && vibrate == true && processor.getCommand() instanceof IntakeBall) {
                 gamepad1.rumble(500);
                 vibrate = false;
             }
 
-            if (processor.getLastExecuted() instanceof Shoot && !processor.isBusy()){
+            if (processor.getLastExecuted() instanceof Shoot && !processor.isBusy()) {
                 processor.override(new IntakeBall(true));
+                robot.follower.startTeleOpDrive(false);
             }
-            if (processor.getLastExecuted() instanceof Sort && !processor.isBusy()){
+            if (processor.getLastExecuted() instanceof Sort && !processor.isBusy()) {
                 processor.override(new IntakeSort());
             }
             /*if (!processor.isBusy() && Robot.threeBalls && (robot.inBackTriangle() || robot.inFrontTriangle())){

@@ -59,9 +59,6 @@ public class LimelightTest extends LinearOpMode {
             turretController.setI(ki);
 
 
-            ;
-
-
             LLResult result = limelight3A.getLatestResult();
             if (result != null && result.isValid() ){
                 double x = result.getTy();

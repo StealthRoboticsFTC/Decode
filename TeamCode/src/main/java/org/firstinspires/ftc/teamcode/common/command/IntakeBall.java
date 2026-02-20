@@ -31,6 +31,9 @@ public class IntakeBall implements Command{
             }
         } else if (stage == 2 && robot.colorSensors.ballsInIntake()) {
             Robot.threeBalls = true;
+            if (robot.follower.isTeleopDrive()){
+                robot.follower.startTeleOpDrive(true);
+            }
             robot.pins.setPinOpen(0);
             elapsedTime.reset();
             stage++;

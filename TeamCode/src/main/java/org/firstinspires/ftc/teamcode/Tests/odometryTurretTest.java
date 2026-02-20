@@ -35,7 +35,7 @@ public class odometryTurretTest extends LinearOpMode {
     public static double ks = 0.0825;
     public static long ms_comp = 40;
 
-    private TimestampedAngleBacklog backlog = new TimestampedAngleBacklog();
+    private final TimestampedAngleBacklog backlog = new TimestampedAngleBacklog();
     TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     LoopTimer timer = new LoopTimer();
 

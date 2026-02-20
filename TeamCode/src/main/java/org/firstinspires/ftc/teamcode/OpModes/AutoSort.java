@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.common.menu.Screen;
 
 import java.util.Arrays;
 import java.util.List;
-@Autonomous
+
 
 public class AutoSort extends LinearOpMode {
     Robot robot;

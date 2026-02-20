@@ -9,10 +9,10 @@ import java.util.HashMap;
  * A listener for the buttons on the gamepad
  */
 public class ButtonListener {
-    private Gamepad last;
-    private Gamepad current;
-    private Gamepad gamepad;
-    private HashMap<Button, ArrayList<Runnable>> listeners;
+    private final Gamepad last;
+    private final Gamepad current;
+    private final Gamepad gamepad;
+    private final HashMap<Button, ArrayList<Runnable>> listeners;
 
     /**
      * Crates the listener from a gamepad

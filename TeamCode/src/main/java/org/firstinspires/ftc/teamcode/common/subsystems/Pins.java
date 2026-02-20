@@ -10,11 +10,11 @@ public class Pins {
 
     private final static double leftPinClose = 0.6;
     private final static double centerPinClose = 0.105;
-    private final static double rightPinClose = 0.3;
+    private final static double rightPinClose = 0.2875;
 
     private final static double leftPinOpen= 0.68;
     private final static double centerPinOpen = 0.4;
-    private final static double rightPinOpen = 0.525;
+    private final static double rightPinOpen = 0.5375;
 
     Servo[] pins;
 

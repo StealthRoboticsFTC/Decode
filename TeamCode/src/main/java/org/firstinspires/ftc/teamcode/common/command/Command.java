@@ -11,11 +11,11 @@ public interface Command {
      * Updates the command by one cycle
      * @param robot the robot
      */
-    public void update(Robot robot);
+    void update(Robot robot);
 
     /**
      * Checks if the task is complete
      * @return the status of completion of the task
      */
-    public boolean isDone();
+    boolean isDone();
 }

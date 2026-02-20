@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 
 public class Menu {
 
-    private List<Screen> screens;
+    private final List<Screen> screens;
     private int currentScreen;
-    private ButtonListener listener;
-    private Telemetry telemetry;
+    private final ButtonListener listener;
+    private final Telemetry telemetry;
 
     public Menu(ButtonListener listener, Telemetry telemetry, List<Screen> screens) {
         this.listener = listener;
