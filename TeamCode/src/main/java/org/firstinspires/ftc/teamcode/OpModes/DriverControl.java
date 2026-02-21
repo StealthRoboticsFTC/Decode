@@ -40,7 +40,7 @@ public class DriverControl extends LinearOpMode {
 
         listener.addListener(Button.R_TRIGGER_DOWN, () -> {
             gamepad1.rumble(500);
-            if (Robot.sort) {
+            if (Robot.sort && (Robot.motif == 21 || Robot.motif == 22 || Robot.motif == 23)) {
                 processor.override(new Sort(Robot.motif));
             } else {
                 processor.override(new Shoot());

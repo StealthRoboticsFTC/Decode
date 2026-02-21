@@ -12,7 +12,7 @@ public class Reset implements Command{
             robot.turret.setTargetAngle(0);
             robot.intake.turnOffIntake();
             robot.lifter.liftDown();
-            robot.transfer.turnOnTransfer();
+            robot.transfer.turnOffTransfer();
         }
     }
 

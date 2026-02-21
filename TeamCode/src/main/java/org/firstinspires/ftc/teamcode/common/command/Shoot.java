@@ -9,7 +9,7 @@ public class Shoot implements Command{
     ElapsedTime elapsedTime = new ElapsedTime();
     @Override
     public void update(Robot robot) {
-        if (stage == 0 && robot.turret.atTarget() && robot.shooter.atTargetVelocity() && !robot.follower.isBusy()){
+        if (stage == 0 && ((robot.turret.atTarget() && robot.shooter.atTargetVelocity() && !robot.follower.isBusy()) || elapsedTime.milliseconds()>2500)){
 
             robot.intake.turnOnIntake();
             robot.lifter.liftDown();
