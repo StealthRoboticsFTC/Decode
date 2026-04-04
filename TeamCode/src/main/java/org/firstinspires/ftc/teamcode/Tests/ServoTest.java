@@ -9,15 +9,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class ServoTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        CRServo superServoLeft= hardwareMap.get(CRServo.class, "servo_tl");
-        CRServo superServoRight= hardwareMap.get(CRServo.class, "servo_tr");
+        CRServo superServoLeftFront = hardwareMap.get(CRServo.class, "servo_tlf");
+        superServoLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo superServoRightFront = hardwareMap.get(CRServo.class, "servo_trf");
+        CRServo superServoLeftBack = hardwareMap.get(CRServo.class, "servo_tlb");
+        superServoLeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo superServoRightBack = hardwareMap.get(CRServo.class, "servo_trb");
         waitForStart();
         while (!isStopRequested()){
-            superServoLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-            superServoLeft.setPower(1);     
-            superServoRight.setPower(1);
-            telemetry.addData("Left", superServoLeft.getPortNumber());
-            telemetry.addData("right", superServoRight.getPortNumber());
+
+            superServoRightFront.setPower(1);
+            superServoLeftBack.setPower(1);
+            superServoLeftFront.setPower(1);
+            superServoRightBack.setPower(1);
+
             telemetry.update();
         }
 

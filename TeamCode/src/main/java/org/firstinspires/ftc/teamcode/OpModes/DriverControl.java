@@ -67,22 +67,17 @@ public class DriverControl extends LinearOpMode {
             processor.override(new IntakeBall(false));
         });
 
-        listener.addListener(Button.L_STICK_DOWN, () -> {
-            if (robot.turret.isUseAutoAim()) {
+        listener.addListener(Button.D_DOWN_DOWN , () -> {
+            if (robot.turret.isUseAutoAim() || robot.shooter.isUseAutoAim()) {
                 robot.turret.noAutoAim();
-            } else {
-                robot.turret.useAutoAim();
-            }
-
-        });
-        listener.addListener(Button.R_STICK_DOWN, () -> {
-            if (robot.shooter.isUseAutoAim()) {
                 robot.shooter.noAutoAim();
             } else {
+                robot.turret.useAutoAim();
                 robot.shooter.useAutoAim();
             }
 
         });
+
         listener.addListener(Button.CROSS_DOWN, () -> {
             processor.override(new Reset());
         });
@@ -114,6 +109,8 @@ public class DriverControl extends LinearOpMode {
 
         robot.follower.setMaxPower(1);
         robot.follower.startTeleOpDrive(false);
+        robot.shooter.useAutoAim();
+        robot.turret.useAutoAim();
 
         while (!isStopRequested()) {
             if (Robot.threeBalls && vibrate == true && processor.getCommand() instanceof IntakeBall) {

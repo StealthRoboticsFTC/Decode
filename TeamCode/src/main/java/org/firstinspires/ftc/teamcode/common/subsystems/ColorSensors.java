@@ -16,7 +16,7 @@ public class ColorSensors {
     ColorSensor rightColorSensor;
 
 
-    public ColorSensors(HardwareMap hardwareMap){
+    public ColorSensors(HardwareMap hardwareMap){ 
         leftColorSensor = hardwareMap.get(ColorSensor.class, "sensor_cl");
         rightColorSensor = hardwareMap.get(ColorSensor.class, "sensor_cr");
     }

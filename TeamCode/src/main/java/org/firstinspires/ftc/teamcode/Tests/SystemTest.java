@@ -51,7 +51,7 @@ public class SystemTest extends LinearOpMode {
 
     public static double liftPos = 0.275;
 
-    LoopTimer timer = new LoopTimer();
+
 
 
 
@@ -76,9 +76,12 @@ public class SystemTest extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        CRServo transferLeft = hardwareMap.get(CRServo.class, "servo_tl");
-        transferLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        CRServo transferRight = hardwareMap.get(CRServo.class, "servo_tr");
+        CRServo transferLeftFront = hardwareMap.get(CRServo.class, "servo_tlf");
+        transferLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo transferRightFront = hardwareMap.get(CRServo.class, "servo_trf");
+        CRServo transferLeftBack = hardwareMap.get(CRServo.class, "servo_tlb");
+        transferLeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo transferRightBack = hardwareMap.get(CRServo.class, "servo_trb");
 
         Servo leftPin = hardwareMap.get(Servo.class,"servo_lp");
         Servo centerPin = hardwareMap.get(Servo.class,"servo_cp");
@@ -106,7 +109,7 @@ public class SystemTest extends LinearOpMode {
         limelight.pipelineSwitch(0);
         limelight.start();
         while (!isStopRequested()){
-            timer.start();
+
             leftLift.setPosition(liftPos);
             rightLift.setPosition(liftPos);
             if (turretTargetPosition != 0){
@@ -136,8 +139,10 @@ public class SystemTest extends LinearOpMode {
 
             }
             if (transferPower != 0){
-                transferRight.setPower(transferPower);
-                transferLeft.setPower(transferPower);
+                transferRightFront.setPower(transferPower);
+                transferLeftFront.setPower(transferPower);
+                transferRightBack.setPower(transferPower);
+                transferLeftBack.setPower(transferPower);
 
             }
             if (usePins){
@@ -215,7 +220,7 @@ public class SystemTest extends LinearOpMode {
 
 
             follower.update();
-            timer.end();
+
 
             telemetry.update();
 
