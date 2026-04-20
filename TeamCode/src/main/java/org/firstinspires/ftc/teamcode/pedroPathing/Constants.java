@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.PredictiveBrakingCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -16,18 +17,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(15.88)
-            .forwardZeroPowerAcceleration(-39.83615539056046)
-            .lateralZeroPowerAcceleration(-68.9212693945856)
-            .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.2,0,0.02,0.03))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.015))
             .headingPIDFCoefficients(new PIDFCoefficients(0.75,0,0.0625,0.025))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.25, 0, 0.025, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0,0.001,0.6,0.03))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0, 0.0005, 0.6, 0.03))
-            .centripetalScaling(0.000525);
+            .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.125,  0.06411706023197507, 0.0014817731071135865))
+            .centripetalScaling(0);
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
@@ -57,7 +51,7 @@ public class Constants {
      The BEZIER_CURVE_SEARCH_LIMIT should typically be left at 10 and shouldn't be changed.
      */
     public static PathConstraints pathConstraints = new PathConstraints(
-            0.995,
+            0.975,
             0.1,
             0.1,
             0.009,

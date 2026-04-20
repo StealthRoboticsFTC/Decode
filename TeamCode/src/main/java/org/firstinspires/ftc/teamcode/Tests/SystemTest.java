@@ -28,7 +28,7 @@ import java.util.Timer;
 @Configurable
 public class SystemTest extends LinearOpMode {
 
-    private final Pose goalPos = new Pose(144, 144, Math.toRadians(45));
+    private final Pose goalPos = new Pose(133, 131, Math.toRadians(45));
 
     public static boolean usePins = false;
 
@@ -76,12 +76,10 @@ public class SystemTest extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        CRServo transferLeftFront = hardwareMap.get(CRServo.class, "servo_tlf");
-        transferLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        CRServo transferRightFront = hardwareMap.get(CRServo.class, "servo_trf");
-        CRServo transferLeftBack = hardwareMap.get(CRServo.class, "servo_tlb");
-        transferLeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        CRServo transferRightBack = hardwareMap.get(CRServo.class, "servo_trb");
+        CRServo transferLeft = hardwareMap.get(CRServo.class, "servo_tl");
+        transferLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        CRServo transferRight = hardwareMap.get(CRServo.class, "servo_tr");
 
         Servo leftPin = hardwareMap.get(Servo.class,"servo_lp");
         Servo centerPin = hardwareMap.get(Servo.class,"servo_cp");
@@ -129,20 +127,19 @@ public class SystemTest extends LinearOpMode {
                 telemetry.addData("CurrentVelocity", shooterMotorLeft.getVelocity());
                 telemetry.addData("Power", shooterController.run());
                 telemetry.addData("distance", distance);
+                telemetry.addData("TY", limelight.getLatestResult().getTy());
                 telemetry.update();
             }
             if (intakePower != 0){
                 intakeMotor.setPower(intakePower);
-                telemetry.addData("intakeCurrent", intakeMotor.getCurrent(CurrentUnit.AMPS));
-                telemetry.update();
+
 
 
             }
             if (transferPower != 0){
-                transferRightFront.setPower(transferPower);
-                transferLeftFront.setPower(transferPower);
-                transferRightBack.setPower(transferPower);
-                transferLeftBack.setPower(transferPower);
+                transferLeft.setPower(transferPower);
+                transferRight.setPower(transferPower);
+
 
             }
             if (usePins){

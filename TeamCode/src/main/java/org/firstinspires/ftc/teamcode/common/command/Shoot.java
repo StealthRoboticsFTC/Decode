@@ -21,11 +21,11 @@ public class Shoot implements Command{
 
             elapsedTime.reset();
             stage++;
-        } else if (stage == 1 && elapsedTime.milliseconds() > 0) {
+        } else if (stage == 1 && elapsedTime.milliseconds() > 125) {
             robot.pins.setPinOpen(2);
             elapsedTime.reset();
             stage++;
-        } else if (stage == 2 && elapsedTime.milliseconds() > 250) {
+        } else if (stage == 2 && elapsedTime.milliseconds() > 125) {
             robot.pins.setPinOpen(0);
             elapsedTime.reset();
             stage++;

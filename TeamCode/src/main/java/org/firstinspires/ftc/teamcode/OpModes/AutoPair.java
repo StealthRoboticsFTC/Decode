@@ -36,12 +36,12 @@ public class AutoPair extends LinearOpMode {
     private final Pose farScore2Pose = new Pose(57, 25, heading);
 
 
-    private final Pose farPickup1Pose = new Pose(13, 36, heading);
+    private final Pose farPickup1Pose = new Pose(10, 36, heading);
     private final Pose farPickup1Control = new Pose(45, 35, heading);
-    private final Pose farPickup2Pose = new Pose(13, 8, heading);
-    private final Pose farPickup3Pose = new Pose(11, 24, heading);
-    private final Pose farPickup4Pose = new Pose(13, 16, heading);
-    private final Pose farPickup5Pose = new Pose(11, 24, heading);
+    private final Pose farPickup2Pose = new Pose(10, 8, heading);
+    private final Pose farPickup3Pose = new Pose(10, 24, heading);
+    private final Pose farPickup4Pose = new Pose(10, 16, heading);
+    private final Pose farPickup5Pose = new Pose(10, 24, heading);
     private final Pose farPickup6Pose = new Pose(13, 8, heading);
 
 
