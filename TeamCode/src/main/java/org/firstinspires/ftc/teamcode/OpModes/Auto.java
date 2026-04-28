@@ -34,34 +34,34 @@ public class Auto extends LinearOpMode {
     private final Pose closeStart = new Pose(24, 129, Math.toRadians(225));
 
     private final Pose farScore1Pose = new Pose(40, 8, heading);
-    private final Pose farScore2Pose = new Pose(57, 25, heading);
+    private final Pose farScore2Pose = new Pose(58, 25, heading);
     private final Pose farScore2Control = new Pose(60, 65, heading);
     private final Pose farScore3Pose = new Pose(50, 8, heading);
     private final Pose closeScore1Pose = new Pose(50, 84, heading);
     private final Pose closeScore2Pose = new Pose(55, 80, heading);
 
 
-    private final Pose farPickup1Pose = new Pose(16, 8, heading);
-    private final Pose farPickup2Pose = new Pose(13, 60, heading);
+    private final Pose farPickup1Pose = new Pose(13, 8, heading);
+    private final Pose farPickup2Pose = new Pose(12, 55, heading);
     private final Pose farPickup2Control = new Pose(60, 65, heading);
-    private final Pose farPickup3Pose = new Pose(14, 36, heading);
+    private final Pose farPickup3Pose = new Pose(10, 36, heading);
     private final Pose farPickup3Control = new Pose(45, 35, heading);
 
-    private final Pose farPickup4Pose = new Pose(24, 8, heading);
-    private final Pose farPickup5Pose = new Pose(12, 8, heading);
+    private final Pose farPickup4Pose = new Pose(20, 8, heading);
+    private final Pose farPickup5Pose = new Pose(10, 8, heading);
 
     private final Pose closePickup1Pose = new Pose(23, 84, heading);
-    private final Pose closePickup2Pose = new Pose(12, 55, heading);
-    private final Pose closePickup2Control = new Pose(40, 50, heading);
-    private final Pose closePickup3Pose = new Pose(10, 35, heading);
-    private final Pose closePickup3Control = new Pose(50, 25, heading);
+    private final Pose closePickup2Pose = new Pose(12, 60, heading);
+    private final Pose closePickup2Control = new Pose(40, 60, heading);
+    private final Pose closePickup3Pose = new Pose(10, 40, heading);
+    private final Pose closePickup3Control = new Pose(50, 30, heading);
 
 
-    private final Pose closeGateOpen = new Pose(8, 70, Math.toRadians(70));
-    private final Pose closeGateOpenControl = new Pose(50, 70, heading);
+    private final Pose closeGateOpen = new Pose(8, 80, Math.toRadians(70));
+    private final Pose closeGateOpenControl = new Pose(35, 80, heading);
 
-    private final Pose farGateOpen = new Pose(8, 63, Math.toRadians(300));
-    private final Pose farGateOpenControl = new Pose(50, 63, heading);
+    private final Pose farGateOpen = new Pose(8, 66, Math.toRadians(300));
+    private final Pose farGateOpenControl = new Pose(20, 63, heading);
 
 
     private final Pose farParkPose = new Pose(30, 8, heading);
@@ -287,6 +287,19 @@ public class Auto extends LinearOpMode {
                     .setBrakingStrength(3)
                     .build();
 
+            grabPickup4 = robot.follower.pathBuilder()
+                    .addPath(new BezierCurve(closeScore2Pose, closePickup2Control, closePickup2Pose))
+                    .setLinearHeadingInterpolation(closeScore2Pose.getHeading(), closePickup2Pose.getHeading())
+                    .setNoDeceleration()
+                    .build();
+
+
+            scorePickup4 = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(closePickup2Pose, closeScore2Pose))
+                    .setLinearHeadingInterpolation(closePickup2Pose.getHeading(), closeScore2Pose.getHeading())
+                    .setBrakingStart(3)
+                    .build();
+
 
             park = robot.follower.pathBuilder()
                     .addPath(new BezierLine(closeScore2Pose, closeParkPose))
@@ -342,6 +355,19 @@ public class Auto extends LinearOpMode {
                     .addPath(new BezierLine(closePickup3Pose.mirror(), closeScore2Pose.mirror()))
                     .setLinearHeadingInterpolation(closePickup3Pose.mirror().getHeading(), closeScore2Pose.mirror().getHeading())
                     .setBrakingStrength(3)
+                    .build();
+
+            grabPickup4 = robot.follower.pathBuilder()
+                    .addPath(new BezierCurve(closeScore2Pose.mirror(), closePickup2Control.mirror(), closePickup2Pose.mirror()))
+                    .setLinearHeadingInterpolation(closeScore2Pose.mirror().getHeading(), closePickup2Pose.mirror().getHeading())
+                    .setNoDeceleration()
+                    .build();
+
+
+            scorePickup4 = robot.follower.pathBuilder()
+                    .addPath(new BezierLine(closePickup2Pose.mirror(), closeScore2Pose.mirror()))
+                    .setLinearHeadingInterpolation(closePickup2Pose.mirror().getHeading(), closeScore2Pose.mirror().getHeading())
+                    .setBrakingStart(3)
                     .build();
 
 
@@ -533,7 +559,24 @@ public class Auto extends LinearOpMode {
                 } else if (stage == 15 && !robot.follower.isBusy()) {
                     processor.override(new Shoot());
                     increment();
-                } else if (stage == 16 && !processor.isBusy()) {
+                }  else if (stage == 16 && !processor.isBusy()) {
+                    processor.override(new IntakeBall(false));
+                    robot.follower.followPath(grabPickup4);
+                    increment();
+                } else if (stage == 17 && moveToNext()) {
+                    robot.follower.followPath(scorePickup4);
+                    increment();
+                } else if (stage == 18) {
+                    if (robot.ballsInIntake()) {
+                        processor.override(new IntakeTransfer());
+                        increment();
+                    } else if (elapsedTime.milliseconds() > 1000) {
+                        increment();
+                    }
+                } else if (stage == 19 && !robot.follower.isBusy()) {
+                    processor.override(new Shoot());
+                    increment();
+                }else if (stage == 20 && !processor.isBusy()) {
                     robot.follower.followPath(park);
                     robot.limelight.setPipLine(null);
                     if (Robot.color == Color.RED) {
@@ -542,7 +585,7 @@ public class Auto extends LinearOpMode {
                         robot.turret.setTargetAngle(-40);
                     }
                     increment();
-                } else if (stage == 17) {
+                } else if (stage == 21) {
                     if (robot.limelight.getMotif() != 0) {
                         Robot.motif = robot.limelight.getMotif();
                     }

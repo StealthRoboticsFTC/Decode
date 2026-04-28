@@ -15,7 +15,6 @@ public class Shoot implements Command{
             robot.lifter.liftDown();
             robot.transfer.turnOnTransfer();
             robot.pins.setPinOpen(1);
-            robot.follower.holdPoint(Robot.robotPos);
 
 
 

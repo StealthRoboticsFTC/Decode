@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.bylazar.utils.LoopTimer;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -37,6 +38,7 @@ public class DriverControl extends LinearOpMode {
         robot = new Robot(hardwareMap);
         processor = new Processor();
         vibrate = true;
+        LoopTimer timer = new LoopTimer();
 
         listener.addListener(Button.R_TRIGGER_DOWN, () -> {
             gamepad1.rumble(500);
@@ -113,6 +115,7 @@ public class DriverControl extends LinearOpMode {
         robot.turret.useAutoAim();
 
         while (!isStopRequested()) {
+            timer.start();
             if (Robot.threeBalls && vibrate == true && processor.getCommand() instanceof IntakeBall) {
                 gamepad1.rumble(500);
                 vibrate = false;
@@ -150,9 +153,11 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("distance", robot.limelight.getDistance());
             telemetry.addData("velocity", robot.shooter.getVelocity());
             telemetry.addData("targetVelocity", robot.shooter.getTargetVelocity());
+            telemetry.addData("loopTime", timer.getMs());
 
 
             telemetry.update();
+            timer.end();
         }
     }
 }

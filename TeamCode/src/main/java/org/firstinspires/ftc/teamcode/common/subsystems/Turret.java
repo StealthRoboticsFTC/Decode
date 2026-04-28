@@ -53,7 +53,7 @@ public class Turret {
             targetAngle = noAutoAimTarget;
         }
 
-        if (Math.abs(targetAngle) < 180 && !atAngle) {
+        if (Math.abs(targetAngle) < 175 && !atAngle) {
             controller.setTarget(targetAngle);
             double power = Math.clamp(controller.update(turretAngle, k * turret.getVelocity()), -0.75, 0.75);
             turret.setPower(power);
